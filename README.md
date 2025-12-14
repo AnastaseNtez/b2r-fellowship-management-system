@@ -1,4 +1,4 @@
-# 🌾 B2R Farms Fellowship Management System (B2R-FMS)
+# 🌾 Bridge2Rwanda Farms Fellowship Management System (B2R-FMS)
 
 ## 📌 Project Overview
 
