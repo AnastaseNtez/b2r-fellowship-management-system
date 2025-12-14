@@ -1,22 +1,26 @@
-"""
-URL configuration for bridge2Rwanda_fellowship_management_system project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
+    # Django Admin Interface
     path('admin/', admin.site.urls),
+
+    # 1. Authentication API
+    path('api/auth/', include('accounts.urls')), 
+    
+    # 2. Locations AJAX URLs
+    path('', include('locations.urls')), 
+    
+    # 3. FELLOWS APP - WEB VIEWS
+    # This path handles web views like the registration form at /fellows/register/
+    path('fellows/', include('fellows.urls')),
+
+    # 4. FELLOWS APP - API ENDPOINTS
+    # This path handles API endpoints like /api/fellows/
+    path('api/fellows/', include('fellows.urls')),
+    
+    # 5. Activities App URLs
+    path('api/activities/', include('activities.urls')),
+    
+    # ... other app includes (Reports, etc.)
 ]

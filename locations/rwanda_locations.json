@@ -1,0 +1,606 @@
+[
+  {
+    "province": "Kigali City",
+    "code": "01",
+    "districts": [
+      {
+        "name": "Nyarugenge",
+        "code": "01-01",
+        "sectors": [
+          {"name": "Gitega", "code": "01-01-01"},
+          {"name": "Kanyinya", "code": "01-01-02"},
+          {"name": "Kigali", "code": "01-01-03"},
+          {"name": "Kimisagara", "code": "01-01-04"},
+          {"name": "Mageragere", "code": "01-01-05"},
+          {"name": "Muhima", "code": "01-01-06"},
+          {"name": "Nyakabanda", "code": "01-01-07"},
+          {"name": "Nyamirambo", "code": "01-01-08"},
+          {"name": "Nyarugenge", "code": "01-01-09"},
+          {"name": "Rwezamenyo", "code": "01-01-10"}
+        ]
+      },
+      {
+        "name": "Gasabo",
+        "code": "01-02",
+        "sectors": [
+          {"name": "Bumbogo", "code": "01-02-01"},
+          {"name": "Gatsata", "code": "01-02-02"},
+          {"name": "Gikomero", "code": "01-02-03"},
+          {"name": "Gisozi", "code": "01-02-04"},
+          {"name": "Jabana", "code": "01-02-05"},
+          {"name": "Jali", "code": "01-02-06"},
+          {"name": "Kacyiru", "code": "01-02-07"},
+          {"name": "Kimihurura", "code": "01-02-08"},
+          {"name": "Kimironko", "code": "01-02-09"},
+          {"name": "Kinyinya", "code": "01-02-10"},
+          {"name": "Ndera", "code": "01-02-11"},
+          {"name": "Nduba", "code": "01-02-12"},
+          {"name": "Remera", "code": "01-02-13"},
+          {"name": "Rusororo", "code": "01-02-14"},
+          {"name": "Rutanga", "code": "01-02-15"}
+        ]
+      },
+      {
+        "name": "Kicukiro",
+        "code": "01-03",
+        "sectors": [
+          {"name": "Gahanga", "code": "01-03-01"},
+          {"name": "Gikondo", "code": "01-03-02"},
+          {"name": "Kagarama", "code": "01-03-03"},
+          {"name": "Kanombe", "code": "01-03-04"},
+          {"name": "Kicukiro", "code": "01-03-05"},
+          {"name": "Kigarama", "code": "01-03-06"},
+          {"name": "Masaka", "code": "01-03-07"},
+          {"name": "Niboye", "code": "01-03-08"},
+          {"name": "Nyarugunga", "code": "01-03-09"}
+        ]
+      }
+    ]
+  },
+  {
+    "province": "Southern Province",
+    "code": "02",
+    "districts": [
+      {
+        "name": "Gisagara",
+        "code": "02-01",
+        "sectors": [
+          {"name": "Gikonko", "code": "02-01-01"},
+          {"name": "Gishubi", "code": "02-01-02"},
+          {"name": "Kansi", "code": "02-01-03"},
+          {"name": "Kibilizi", "code": "02-01-04"},
+          {"name": "Kigembe", "code": "02-01-05"},
+          {"name": "Mamba", "code": "02-01-06"},
+          {"name": "Muganza", "code": "02-01-07"},
+          {"name": "Mugombwa", "code": "02-01-08"},
+          {"name": "Mukindo", "code": "02-01-09"},
+          {"name": "Musebeya", "code": "02-01-10"},
+          {"name": "Mushikiri", "code": "02-01-11"},
+          {"name": "Nyamiyaga", "code": "02-01-12"},
+          {"name": "Save", "code": "02-01-13"}
+        ]
+      },
+      {
+        "name": "Huye",
+        "code": "02-02",
+        "sectors": [
+          {"name": "Gishamvu", "code": "02-02-01"},
+          {"name": "Karama", "code": "02-02-02"},
+          {"name": "Kigoma", "code": "02-02-03"},
+          {"name": "Kinazi", "code": "02-02-04"},
+          {"name": "Maraba", "code": "02-02-05"},
+          {"name": "Mbazi", "code": "02-02-06"},
+          {"name": "Mukura", "code": "02-02-07"},
+          {"name": "Ngoma", "code": "02-02-08"},
+          {"name": "Ruhashya", "code": "02-02-09"},
+          {"name": "Rusatira", "code": "02-02-10"},
+          {"name": "Rwamagana", "code": "02-02-11"},
+          {"name": "Simbi", "code": "02-02-12"},
+          {"name": "Tumba", "code": "02-02-13"},
+          {"name": "Tumami", "code": "02-02-14"},
+          {"name": "Zaza", "code": "02-02-15"}
+        ]
+      },
+      {
+        "name": "Kamonyi",
+        "code": "02-03",
+        "sectors": [
+          {"name": "Gacurabwenge", "code": "02-03-01"},
+          {"name": "Karama", "code": "02-03-02"},
+          {"name": "Kayenzi", "code": "02-03-03"},
+          {"name": "Kayumbu", "code": "02-03-04"},
+          {"name": "Mugina", "code": "02-03-05"},
+          {"name": "Musambira", "code": "02-03-06"},
+          {"name": "Rugarika", "code": "02-03-07"},
+          {"name": "Rukoma", "code": "02-03-08"},
+          {"name": "Runda", "code": "02-03-09"},
+          {"name": "Rwamagana", "code": "02-03-10"},
+          {"name": "Ruyumba", "code": "02-03-11"},
+          {"name": "Shyira", "code": "02-03-12"}
+        ]
+      },
+      {
+        "name": "Muhanga",
+        "code": "02-04",
+        "sectors": [
+          {"name": "Cyeza", "code": "02-04-01"},
+          {"name": "Gatare", "code": "02-04-02"},
+          {"name": "Kibangu", "code": "02-04-03"},
+          {"name": "Kiyumba", "code": "02-04-04"},
+          {"name": "Muhanga", "code": "02-04-05"},
+          {"name": "Mushishiro", "code": "02-04-06"},
+          {"name": "Nyabinwa", "code": "02-04-07"},
+          {"name": "Nyakaronga", "code": "02-04-08"},
+          {"name": "Nyaruhande", "code": "02-04-09"},
+          {"name": "Rongi", "code": "02-04-10"},
+          {"name": "Ruhango", "code": "02-04-11"},
+          {"name": "Shyogwe", "code": "02-04-12"}
+        ]
+      },
+      {
+        "name": "Nyamagabe",
+        "code": "02-05",
+        "sectors": [
+          {"name": "Buruhukiro", "code": "02-05-01"},
+          {"name": "Gatare", "code": "02-05-02"},
+          {"name": "Kamegeli", "code": "02-05-03"},
+          {"name": "Kibirizi", "code": "02-05-04"},
+          {"name": "Kigeme", "code": "02-05-05"},
+          {"name": "Kivu", "code": "02-05-06"},
+          {"name": "Mamba", "code": "02-05-07"},
+          {"name": "Mugano", "code": "02-05-08"},
+          {"name": "Musange", "code": "02-05-09"},
+          {"name": "Musebeya", "code": "02-05-10"},
+          {"name": "Mushubi", "code": "02-05-11"},
+          {"name": "Nkomane", "code": "02-05-12"},
+          {"name": "Tare", "code": "02-05-13"},
+          {"name": "Uwinkingi", "code": "02-05-14"}
+        ]
+      },
+      {
+        "name": "Nyanza",
+        "code": "02-06",
+        "sectors": [
+          {"name": "Busasamana", "code": "02-06-01"},
+          {"name": "Busoro", "code": "02-06-02"},
+          {"name": "Cyabakamyi", "code": "02-06-03"},
+          {"name": "Kansi", "code": "02-06-04"},
+          {"name": "Kigoma", "code": "02-06-05"},
+          {"name": "Mukingo", "code": "02-06-06"},
+          {"name": "Muyira", "code": "02-06-07"},
+          {"name": "Ntyazo", "code": "02-06-08"},
+          {"name": "Nyagisozi", "code": "02-06-09"},
+          {"name": "Rwabicuma", "code": "02-06-10"}
+        ]
+      },
+      {
+        "name": "Nyaruguru",
+        "code": "02-07",
+        "sectors": [
+          {"name": "Busanze", "code": "02-07-01"},
+          {"name": "Kibeho", "code": "02-07-02"},
+          {"name": "Mata", "code": "02-07-03"},
+          {"name": "Munini", "code": "02-07-04"},
+          {"name": "Ngera", "code": "02-07-05"},
+          {"name": "Ngoma", "code": "02-07-06"},
+          {"name": "Nyagisozi", "code": "02-07-07"},
+          {"name": "Ruramba", "code": "02-07-08"},
+          {"name": "Rusenge", "code": "02-07-09"},
+          {"name": "Rwamagana", "code": "02-07-10"}
+        ]
+      },
+      {
+        "name": "Ruhango",
+        "code": "02-08",
+        "sectors": [
+          {"name": "Bweramana", "code": "02-08-01"},
+          {"name": "Byimana", "code": "02-08-02"},
+          {"name": "Kinihira", "code": "02-08-03"},
+          {"name": "Mbuye", "code": "02-08-04"},
+          {"name": "Ntongwe", "code": "02-08-05"},
+          {"name": "Ruhango", "code": "02-08-06"},
+          {"name": "Rwamagana", "code": "02-08-07"},
+          {"name": "Shyorongi", "code": "02-08-08"},
+          {"name": "Tabwe", "code": "02-08-09"}
+        ]
+      }
+    ]
+  },
+  {
+    "province": "Western Province",
+    "code": "03",
+    "districts": [
+      {
+        "name": "Karongi",
+        "code": "03-01",
+        "sectors": [
+          {"name": "Bwishyura", "code": "03-01-01"},
+          {"name": "Gitesi", "code": "03-01-02"},
+          {"name": "Gishita", "code": "03-01-03"},
+          {"name": "Mubuga", "code": "03-01-04"},
+          {"name": "Murambi", "code": "03-01-05"},
+          {"name": "Mutuntu", "code": "03-01-06"},
+          {"name": "Rubengera", "code": "03-01-07"},
+          {"name": "Rugabano", "code": "03-01-08"},
+          {"name": "Rugi", "code": "03-01-09"},
+          {"name": "Rwankuba", "code": "03-01-10"},
+          {"name": "Twumba", "code": "03-01-11"},
+          {"name": "Uwinkingo", "code": "03-01-12"},
+          {"name": "Gishyita", "code": "03-01-13"}
+        ]
+      },
+      {
+        "name": "Ngororero",
+        "code": "03-02",
+        "sectors": [
+          {"name": "Bwira", "code": "03-02-01"},
+          {"name": "Gatumba", "code": "03-02-02"},
+          {"name": "Hindiro", "code": "03-02-03"},
+          {"name": "Kabaya", "code": "03-02-04"},
+          {"name": "Kageyo", "code": "03-02-05"},
+          {"name": "Kicukiro", "code": "03-02-06"},
+          {"name": "Muhanda", "code": "03-02-07"},
+          {"name": "Ngororero", "code": "03-02-08"},
+          {"name": "Nyange", "code": "03-02-09"},
+          {"name": "Sovu", "code": "03-02-11"},
+          {"name": "Vunga", "code": "03-02-12"}
+        ]
+      },
+      {
+        "name": "Nyabihu",
+        "code": "03-03",
+        "sectors": [
+          {"name": "Bigogwe", "code": "03-03-01"},
+          {"name": "Jenda", "code": "03-03-02"},
+          {"name": "Kabatwa", "code": "03-03-03"},
+          {"name": "Karago", "code": "03-03-04"},
+          {"name": "Kintobo", "code": "03-03-05"},
+          {"name": "Mukamira", "code": "03-03-06"},
+          {"name": "Muringa", "code": "03-03-07"},
+          {"name": "Rurembo", "code": "03-03-08"},
+          {"name": "Rwamagana", "code": "03-03-09"},
+          {"name": "Shyira", "code": "03-03-10"}
+        ]
+      },
+      {
+        "name": "Nyamasheke",
+        "code": "03-04",
+        "sectors": [
+          {"name": "Bushekeri", "code": "03-04-01"},
+          {"name": "Bushenge", "code": "03-04-02"},
+          {"name": "Kagano", "code": "03-04-03"},
+          {"name": "Kanjongo", "code": "03-04-04"},
+          {"name": "Karambi", "code": "03-04-05"},
+          {"name": "Karengera", "code": "03-04-06"},
+          {"name": "Kirimbi", "code": "03-04-07"},
+          {"name": "Macuba", "code": "03-04-08"},
+          {"name": "Mahembe", "code": "03-04-09"},
+          {"name": "Muganza", "code": "03-04-10"},
+          {"name": "Muyira", "code": "03-04-11"},
+          {"name": "Nyamasheke", "code": "03-04-12"},
+          {"name": "Rangiro", "code": "03-04-13"},
+          {"name": "Shangi", "code": "03-04-14"},
+          {"name": "Gihombo", "code": "03-04-15"},
+          {"name": "Nyabitekeri", "code": "03-04-16"}
+        ]
+      },
+      {
+        "name": "Rubavu",
+        "code": "03-05",
+        "sectors": [
+          {"name": "Bugesera", "code": "03-05-01"},
+          {"name": "Busasamana", "code": "03-05-02"},
+          {"name": "Cyanzarwe", "code": "03-05-03"},
+          {"name": "Gisenyi", "code": "03-05-04"},
+          {"name": "Kanama", "code": "03-05-05"},
+          {"name": "Kanzenze", "code": "03-05-06"},
+          {"name": "Mudende", "code": "03-05-07"},
+          {"name": "Nyamyumba", "code": "03-05-08"},
+          {"name": "Nyundo", "code": "03-05-09"},
+          {"name": "Rubavu", "code": "03-05-10"},
+          {"name": "Rwamagana", "code": "03-05-11"}
+        ]
+      },
+      {
+        "name": "Rusizi",
+        "code": "03-06",
+        "sectors": [
+          {"name": "Bugarama", "code": "03-06-01"},
+          {"name": "Butare", "code": "03-06-02"},
+          {"name": "Gashonga", "code": "03-06-03"},
+          {"name": "Giheke", "code": "03-06-04"},
+          {"name": "Gihundwe", "code": "03-06-05"},
+          {"name": "Gitambi", "code": "03-06-06"},
+          {"name": "Kamembe", "code": "03-06-07"},
+          {"name": "Muganza", "code": "03-06-08"},
+          {"name": "Mururu", "code": "03-06-09"},
+          {"name": "Nkanka", "code": "03-06-10"},
+          {"name": "Nkombo", "code": "03-06-11"},
+          {"name": "Nkungu", "code": "03-06-12"},
+          {"name": "Nyakabuye", "code": "03-06-13"},
+          {"name": "Nyakarenzo", "code": "03-06-14"},
+          {"name": "Nzahaha", "code": "03-06-15"},
+          {"name": "Rukara", "code": "03-06-16"},
+          {"name": "Rwamagana", "code": "03-06-17"}
+        ]
+      },
+      {
+        "name": "Rutsiro",
+        "code": "03-07",
+        "sectors": [
+          {"name": "Boneza", "code": "03-07-01"},
+          {"name": "Gihango", "code": "03-07-02"},
+          {"name": "Kigali", "code": "03-07-03"},
+          {"name": "Kivumu", "code": "03-07-04"},
+          {"name": "Manihira", "code": "03-07-05"},
+          {"name": "Mukura", "code": "03-07-06"},
+          {"name": "Murunda", "code": "03-07-07"},
+          {"name": "Musasa", "code": "03-07-08"},
+          {"name": "Mushonyi", "code": "03-07-09"},
+          {"name": "Nyabirasi", "code": "03-07-10"},
+          {"name": "Ruhango", "code": "03-07-11"},
+          {"name": "Rwamagana", "code": "03-07-12"},
+          {"name": "Rutsiro", "code": "03-07-13"}
+        ]
+      }
+    ]
+  },
+  {
+    "province": "Northern Province",
+    "code": "04",
+    "districts": [
+      {
+        "name": "Burera",
+        "code": "04-01",
+        "sectors": [
+          {"name": "Bungwe", "code": "04-01-01"},
+          {"name": "Butaro", "code": "04-01-02"},
+          {"name": "Cyanika", "code": "04-01-03"},
+          {"name": "Cyeru", "code": "04-01-04"},
+          {"name": "Gahunga", "code": "04-01-05"},
+          {"name": "Gatebe", "code": "04-01-06"},
+          {"name": "Gitovu", "code": "04-01-07"},
+          {"name": "Kagogo", "code": "04-01-08"},
+          {"name": "Kinoni", "code": "04-01-09"},
+          {"name": "Kinyababa", "code": "04-01-10"},
+          {"name": "Kivuye", "code": "04-01-11"},
+          {"name": "Nemba", "code": "04-01-12"},
+          {"name": "Rugarama", "code": "04-01-13"},
+          {"name": "Rugendabari", "code": "04-01-14"},
+          {"name": "Ruhunde", "code": "04-01-15"},
+          {"name": "Rusarabuge", "code": "04-01-16"},
+          {"name": "Rwerere", "code": "04-01-17"}
+        ]
+      },
+      {
+        "name": "Gakenke",
+        "code": "04-02",
+        "sectors": [
+          {"name": "Busengo", "code": "04-02-01"},
+          {"name": "Coko", "code": "04-02-02"},
+          {"name": "Cyabingo", "code": "04-02-03"},
+          {"name": "Gakenke", "code": "04-02-04"},
+          {"name": "Gashenyi", "code": "04-02-05"},
+          {"name": "Janja", "code": "04-02-06"},
+          {"name": "Kamubuga", "code": "04-02-07"},
+          {"name": "Karambo", "code": "04-02-08"},
+          {"name": "Kivuruga", "code": "04-02-09"},
+          {"name": "Mataba", "code": "04-02-10"},
+          {"name": "Minazi", "code": "04-02-11"},
+          {"name": "Mugunga", "code": "04-02-12"},
+          {"name": "Muhondo", "code": "04-02-13"},
+          {"name": "Muyongwe", "code": "04-02-14"},
+          {"name": "Muzo", "code": "04-02-15"},
+          {"name": "Nemba", "code": "04-02-16"},
+          {"name": "Ruli", "code": "04-02-17"},
+          {"name": "Rusasa", "code": "04-02-18"},
+          {"name": "Rushashi", "code": "04-02-19"}
+        ]
+      },
+      {
+        "name": "Gicumbi",
+        "code": "04-03",
+        "sectors": [
+          {"name": "Bukure", "code": "04-03-01"},
+          {"name": "Byumba", "code": "04-03-02"},
+          {"name": "Cyumba", "code": "04-03-03"},
+          {"name": "Giti", "code": "04-03-04"},
+          {"name": "Kaniga", "code": "04-03-05"},
+          {"name": "Kageyo", "code": "04-03-06"},
+          {"name": "Kigali", "code": "04-03-07"},
+          {"name": "Kiyombe", "code": "04-03-08"},
+          {"name": "Manyagiro", "code": "04-03-09"},
+          {"name": "Miyove", "code": "04-03-10"},
+          {"name": "Mukarange", "code": "04-03-11"},
+          {"name": "Rushaki", "code": "04-03-12"},
+          {"name": "Rutare", "code": "04-03-13"},
+          {"name": "Ruvune", "code": "04-03-14"},
+          {"name": "Rwamiko", "code": "04-03-15"},
+          {"name": "Rwempasha", "code": "04-03-16"},
+          {"name": "Shyira", "code": "04-03-17"},
+          {"name": "Zaza", "code": "04-03-18"}
+        ]
+      },
+      {
+        "name": "Musanze",
+        "code": "04-04",
+        "sectors": [
+          {"name": "Busogo", "code": "04-04-01"},
+          {"name": "Cyuve", "code": "04-04-02"},
+          {"name": "Gacaca", "code": "04-04-03"},
+          {"name": "Gataraga", "code": "04-04-04"},
+          {"name": "Kimonyi", "code": "04-04-05"},
+          {"name": "Kinigi", "code": "04-04-06"},
+          {"name": "Muhoza", "code": "04-04-07"},
+          {"name": "Muko", "code": "04-04-08"},
+          {"name": "Musanze", "code": "04-04-09"},
+          {"name": "Nkotsi", "code": "04-04-10"},
+          {"name": "Nyange", "code": "04-04-11"},
+          {"name": "Ruchera", "code": "04-04-12"},
+          {"name": "Rugarama", "code": "04-04-13"},
+          {"name": "Rwaza", "code": "04-04-14"},
+          {"name": "Shingiro", "code": "04-04-15"}
+        ]
+      },
+      {
+        "name": "Rulindo",
+        "code": "04-05",
+        "sectors": [
+          {"name": "Base", "code": "04-05-01"},
+          {"name": "Burega", "code": "04-05-02"},
+          {"name": "Buyoga", "code": "04-05-03"},
+          {"name": "Cyinzuzi", "code": "04-05-04"},
+          {"name": "Cyungo", "code": "04-05-05"},
+          {"name": "Kigali", "code": "04-05-06"},
+          {"name": "Kiganda", "code": "04-05-07"},
+          {"name": "Kivumu", "code": "04-05-08"},
+          {"name": "Masoro", "code": "04-05-09"},
+          {"name": "Mbogo", "code": "04-05-10"},
+          {"name": "Murambi", "code": "04-05-11"},
+          {"name": "Ngoma", "code": "04-05-12"},
+          {"name": "Ntarabana", "code": "04-05-13"},
+          {"name": "Rukozo", "code": "04-05-14"},
+          {"name": "Rusiga", "code": "04-05-15"},
+          {"name": "Shyorongi", "code": "04-05-16"},
+          {"name": "Tumba", "code": "04-05-17"}
+        ]
+      }
+    ]
+  },
+  {
+    "province": "Eastern Province",
+    "code": "05",
+    "districts": [
+      {
+        "name": "Bugesera",
+        "code": "05-01",
+        "sectors": [
+          {"name": "Gashora", "code": "05-01-01"},
+          {"name": "Juru", "code": "05-01-02"},
+          {"name": "Kamabuye", "code": "05-01-03"},
+          {"name": "Ntarama", "code": "05-01-04"},
+          {"name": "Mareba", "code": "05-01-05"},
+          {"name": "Mayange", "code": "05-01-06"},
+          {"name": "Musenyi", "code": "05-01-07"},
+          {"name": "Mwogo", "code": "05-01-08"},
+          {"name": "Ngeruka", "code": "05-01-09"},
+          {"name": "Nyamata", "code": "05-01-10"},
+          {"name": "Nyarugenge", "code": "05-01-11"},
+          {"name": "Rilima", "code": "05-01-12"},
+          {"name": "Ruhuha", "code": "05-01-13"},
+          {"name": "Rweru", "code": "05-01-14"},
+          {"name": "Shyara", "code": "05-01-15"}
+        ]
+      },
+      {
+        "name": "Gatsibo",
+        "code": "05-02",
+        "sectors": [
+          {"name": "Gatsibo", "code": "05-02-01"},
+          {"name": "Gasange", "code": "05-02-02"},
+          {"name": "Kabarore", "code": "05-02-03"},
+          {"name": "Kiziguro", "code": "05-02-04"},
+          {"name": "Kageyo", "code": "05-02-05"},
+          {"name": "Kiramuruzi", "code": "05-02-06"},
+          {"name": "Kiyombe", "code": "05-02-07"},
+          {"name": "Muhura", "code": "05-02-08"},
+          {"name": "Murambi", "code": "05-02-09"},
+          {"name": "Ngarama", "code": "05-02-10"},
+          {"name": "Nyagihanga", "code": "05-02-11"},
+          {"name": "Remera", "code": "05-02-12"},
+          {"name": "Rugarama", "code": "05-02-13"},
+          {"name": "Rukira", "code": "05-02-14"},
+          {"name": "Rwamagana", "code": "05-02-15"}
+        ]
+      },
+      {
+        "name": "Kayonza",
+        "code": "05-03",
+        "sectors": [
+          {"name": "Gahini", "code": "05-03-01"},
+          {"name": "Kabare", "code": "05-03-02"},
+          {"name": "Kabarondo", "code": "05-03-03"},
+          {"name": "Kayonza", "code": "05-03-04"},
+          {"name": "Kigarama", "code": "05-03-05"},
+          {"name": "Nyamirama", "code": "05-03-06"},
+          {"name": "Rukara", "code": "05-03-07"},
+          {"name": "Ruramira", "code": "05-03-08"},
+          {"name": "Rwinkwavu", "code": "05-03-09"}
+        ]
+      },
+      {
+        "name": "Kirehe",
+        "code": "05-04",
+        "sectors": [
+          {"name": "Gahara", "code": "05-04-01"},
+          {"name": "Gatore", "code": "05-04-02"},
+          {"name": "Kigina", "code": "05-04-03"},
+          {"name": "Kirehe", "code": "05-04-04"},
+          {"name": "Mahama", "code": "05-04-05"},
+          {"name": "Musa", "code": "05-04-06"},
+          {"name": "Mushikiri", "code": "05-04-07"},
+          {"name": "Nashenge", "code": "05-04-08"},
+          {"name": "Nyamugari", "code": "05-04-09"},
+          {"name": "Nyankenke", "code": "05-04-10"},
+          {"name": "Rwamagana", "code": "05-04-11"},
+          {"name": "Rusumo", "code": "05-04-12"}
+        ]
+      },
+      {
+        "name": "Ngoma",
+        "code": "05-05",
+        "sectors": [
+          {"name": "Gashanda", "code": "05-05-01"},
+          {"name": "Karembo", "code": "05-05-02"},
+          {"name": "Kibungo", "code": "05-05-03"},
+          {"name": "Murama", "code": "05-05-04"},
+          {"name": "Mutisunga", "code": "05-05-05"},
+          {"name": "Namu", "code": "05-05-06"},
+          {"name": "Ngoma", "code": "05-05-07"},
+          {"name": "Nyagisozi", "code": "05-05-08"},
+          {"name": "Remera", "code": "05-05-09"},
+          {"name": "Rukira", "code": "05-05-10"}
+        ]
+      },
+      {
+        "name": "Nyagatare",
+        "code": "05-06",
+        "sectors": [
+          {"name": "Gatunda", "code": "05-06-01"},
+          {"name": "Karangazi", "code": "05-06-02"},
+          {"name": "Karama", "code": "05-06-03"},
+          {"name": "Katabagemu", "code": "05-06-04"},
+          {"name": "Kiyombe", "code": "05-06-05"},
+          {"name": "Matimba", "code": "05-06-06"},
+          {"name": "Mimuli", "code": "05-06-07"},
+          {"name": "Mukarange", "code": "05-06-08"},
+          {"name": "Musheri", "code": "05-06-09"},
+          {"name": "Nyagatare", "code": "05-06-10"},
+          {"name": "Rukomo", "code": "05-06-11"},
+          {"name": "Rwimiyaga", "code": "05-06-12"},
+          {"name": "Tabwe", "code": "05-06-13"}
+        ]
+      },
+      {
+        "name": "Rwamagana",
+        "code": "05-07",
+        "sectors": [
+          {"name": "Fumbwe", "code": "05-07-01"},
+          {"name": "Gahengeri", "code": "05-07-02"},
+          {"name": "Gishali", "code": "05-07-03"},
+          {"name": "Karenge", "code": "05-07-04"},
+          {"name": "Kigali", "code": "05-07-05"},
+          {"name": "Muhazi", "code": "05-07-06"},
+          {"name": "Munyaga", "code": "05-07-07"},
+          {"name": "Munyiginya", "code": "05-07-08"},
+          {"name": "Musha", "code": "05-07-09"},
+          {"name": "Muyumbu", "code": "05-07-10"},
+          {"name": "Mwulire", "code": "05-07-11"},
+          {"name": "Nyakaliro", "code": "05-07-12"},
+          {"name": "Rwamagana", "code": "05-07-13"},
+          {"name": "Rubona", "code": "05-07-14"}
+        ]
+      }
+    ]
+  }
+]

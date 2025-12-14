@@ -17,7 +17,7 @@ class Province(models.Model):
 # --- 2. District Model ---
 class District(models.Model):
     """Represents the second-level administrative division."""
-    # FK1: Link to Province
+    # FK1 (ForeignKey1): Link to Province
     province = models.ForeignKey(
         Province, 
         on_delete=models.CASCADE, 

@@ -3,7 +3,7 @@ from fellows.models import Fellow   # Used for the Fellow link
 from locations.models import Sector # Used for the Sector link
 
 class TrainingActivity(models.Model):
-    # FK1: Link to the Fellow who logged the activity
+    # FK1: (Foreign Key 1 ) Link to the Fellow who logged the activity
     fellow = models.ForeignKey(
         Fellow, 
         on_delete=models.CASCADE, 
