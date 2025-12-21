@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Reviewing Activity: {{ report.training_topic }}</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Fellow:</strong> {{ report.fellow.get_full_name }}</p>
+                    <p><strong>Date:</strong> {{ report.date }} | <strong>Location:</strong> {{ report.village_name }}, {{ report.sector.name }}</p>
+                    <hr>
+                    <h6>Description:</h6>
+                    <p>{{ report.description|default:"No description provided." }}</p>
+                    <p><strong>Farmers Trained:</strong> {{ report.number_of_farmers_trained }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white">Final Decision</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Feedback to Fellow</label>
+                            <textarea name="mentor_comments" class="form-control" rows="4" placeholder="Great work, but please specify..."></textarea>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" name="status" value="APPROVED" class="btn btn-success">Approve Report</button>
+                            <button type="submit" name="status" value="REVISION" class="btn btn-warning">Request Revision</button>
+                            <a href="{% url 'mentor_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

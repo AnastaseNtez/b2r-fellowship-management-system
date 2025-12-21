@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white d-flex justify-content-between">
+                    <h4 class="mb-0">Review Activity Report</h4>
+                    <span class="badge bg-warning text-dark">{{ report.status }}</span>
+                </div>
+                <div class="card-body">
+                    <h5>Fellow: {{ report.fellow.user.get_full_name }}</h5>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Date:</strong></div>
+                        <div class="col-sm-8">{{ report.date }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Activity Type:</strong></div>
+                        <div class="col-sm-8">{{ report.activity_type }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Hours Spent:</strong></div>
+                        <div class="col-sm-8">{{ report.hours_spent }} hours</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Location:</strong></div>
+                        <div class="col-sm-8">{{ report.location_details }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Description:</strong></div>
+                        <div class="col-sm-8">{{ report.description }}</div>
+                    </div>
+
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <div class="d-flex gap-3">
+                            <button type="submit" name="action" value="approve" class="btn btn-success flex-grow-1">
+                                Approve Report
+                            </button>
+                            <button type="submit" name="action" value="reject" class="btn btn-danger flex-grow-1">
+                                Reject Report
+                            </button>
+                            <a href="{% url 'mentor_dashboard' %}" class="btn btn-outline-secondary">Back</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,8 +49,13 @@ INSTALLED_APPS = [
     'locations.apps.LocationsConfig',    # 2. Province, District, Sector
     'fellows.apps.FellowsConfig',        # 3. Fellow Management
     'activities.apps.ActivitiesConfig',  # 4. Training Activity Logging
+    'mentors', # mentor who is in charge of fellow activities.
 
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,7 +72,7 @@ ROOT_URLCONF = 'bridge2Rwanda_fellowship_management_system.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'bridge2Rwanda_fellowship_management_system', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -159,3 +165,8 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS256",
     "SIGNING_KEY": "django-insecure-key", # Replace with SECRET_KEY later, or use a separate key
 }
+
+# Authentication Settings
+LOGIN_REDIRECT_URL = 'dashboard'  # Redirects to /fellows/dashboard/
+LOGOUT_REDIRECT_URL = 'login'     # Redirects to the login page
+LOGIN_URL = 'login'               # The name of our login URL

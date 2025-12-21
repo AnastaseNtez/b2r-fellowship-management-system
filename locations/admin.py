@@ -1,29 +1,33 @@
 from django.contrib import admin
 from .models import Province, District, Sector
 
-# 1. Define a custom display for the District model
-class DistrictAdmin(admin.ModelAdmin):
-    # Display these fields in the list view
-    list_display = ('name', 'province', 'code', 'sector_count')
-    # Add a filter sidebar to quickly filter by Province
-    list_filter = ('province',)
-    # Add a search bar to search by name or code
+@admin.register(Province)
+class ProvinceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code', 'district_count')
     search_fields = ('name', 'code')
 
-    # Custom method to count sectors within a district
+    def district_count(self, obj):
+        # Uses related_name='districts' from your District model
+        return obj.districts.count()
+    district_count.short_description = 'Number of Districts'
+
+@admin.register(District)
+class DistrictAdmin(admin.ModelAdmin):
+    list_display = ('name', 'province', 'sector_count', 'code')
+    list_filter = ('province',)
+    search_fields = ('name', 'code')
+
     def sector_count(self, obj):
-        # We use obj.sector_set.count() because the Sector model has a ForeignKey to District
-        return obj.sector_set.count()
-    sector_count.short_description = 'Sectors in District'
+        # FIX: Uses related_name='sectors' from your Sector model
+        return obj.sectors.count()
+    sector_count.short_description = 'Number of Sectors'
 
-# 2. Define a custom display for the Sector model
+@admin.register(Sector)
 class SectorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'district', 'code')
-    # Filter by District, and by the District's parent Province (for better navigation)
+    list_display = ('name', 'district', 'get_province', 'code')
     list_filter = ('district__province', 'district')
-    search_fields = ('name', 'code', 'district__name')
+    search_fields = ('name', 'code')
 
-# 3. Register the models
-admin.site.register(Province)
-admin.site.register(District, DistrictAdmin)
-admin.site.register(Sector, SectorAdmin)
+    def get_province(self, obj):
+        return obj.district.province.name
+    get_province.short_description = 'Province'

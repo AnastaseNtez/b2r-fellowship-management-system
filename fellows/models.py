@@ -1,5 +1,3 @@
-# fellows/models.py
-
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -21,7 +19,6 @@ class Fellow(models.Model):
         ON_LEAVE = 'ON_LEAVE', 'On Leave'
 
     # --- Links ---
-    # One-to-one link to the Django User model (for login, email, first_name, last_name)
     user = models.OneToOneField(
         User, 
         on_delete=models.CASCADE, 
@@ -34,13 +31,21 @@ class Fellow(models.Model):
     graduation_year = models.IntegerField()
     
     # --- Assignment Details ---
-    # assigned_sector is the destination; the cascade logic uses district/province 
-    # as temporary form fields, not model fields.
     assigned_sector = models.ForeignKey(
         Sector, 
         on_delete=models.SET_NULL, 
         null=True, 
         related_name='fellows'
+    )
+
+    # UPDATED MENTOR FIELD: Added blank=True and help_text
+    mentor = models.ForeignKey(
+        'mentors.Mentor', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, # Allows saving a fellow before a mentor is assigned
+        related_name='fellows',
+        help_text="The professional mentor supervising this fellow."
     )
     
     # --- Fellowship Dates & Status ---
@@ -59,10 +64,7 @@ class Fellow(models.Model):
     
     @property
     def get_full_name(self):
-        """
-        Retrieves the full name from the associated User object.
-        This is the CRITICAL FIX for the 'get_full_name' error in the view.
-        """
+        """Retrieves the full name from the associated User object."""
         if self.user:
             return f"{self.user.first_name} {self.user.last_name}"
         return "Unknown Fellow"
@@ -76,7 +78,6 @@ class Fellow(models.Model):
     def assigned_province(self):
         """Helper to get the Province via the assigned Sector/District."""
         return self.assigned_sector.district.province if self.assigned_sector else None
-
 
     def __str__(self):
         return self.get_full_name

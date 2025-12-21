@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Mentor Dashboard</h2>
+        <span class="badge bg-info text-dark">Logged in as: {{ user.get_full_name }}</span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Assigned Fellows</h5>
+                    <h2 class="display-4">{{ fellows.count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Pending Activity Reports</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Fellow Name</th>
+                        <th>Activity Date</th>
+                        <th>Type</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in pending_reports %}
+                    <tr>
+                        <td>{{ report.fellow.user.get_full_name }}</td>
+                        <td>{{ report.date }}</td>
+                        <td>{{ report.activity_type }}</td>
+                        <td>
+                            <a href="{% url 'review_report' report.pk %}" class="btn btn-sm btn-success">
+                                Review & Approve
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No pending reports to review.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
