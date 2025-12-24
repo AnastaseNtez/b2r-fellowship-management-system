@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h2 class="fw-bold">B2R Farms Impact Dashboard</h2>
+            <p class="text-muted">Real-time tracking of agricultural training across Rwanda.</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-primary text-white h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase small">Total Farmers Trained</h6>
+                    <h2 class="display-6 fw-bold">{{ metrics.total_farmers }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted small">Training Sessions</h6>
+                    <h2 class="display-6 fw-bold">{{ metrics.total_sessions }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted small">Active Sectors</h6>
+                    <h2 class="display-6 fw-bold text-success">{{ metrics.active_sectors_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted small">Quick Actions</h6>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'submit_activity' %}" class="btn btn-outline-primary btn-sm">Log New Activity</a>
+                        <a href="{% url 'export_activities_csv' %}" class="btn btn-outline-secondary btn-sm">Export CSV</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Reach by Province</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Province</th>
+                                <th>Sessions</th>
+                                <th>Farmers Reached</th>
+                                <th>Progress Bar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in metrics.province_reach %}
+                            <tr>
+                                <td class="fw-bold">{{ p.sector__district__province__name }}</td>
+                                <td>{{ p.session_count }}</td>
+                                <td>{{ p.total_farmers }}</td>
+                                <td style="width: 30%;">
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 75%;"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center">No approved data available yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Recent Reports</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for activity in recent_activities %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong>{{ activity.training_topic }}</strong>
+                            <span class="badge rounded-pill 
+                                {% if activity.status == 'APPROVED' %}bg-success
+                                {% elif activity.status == 'REVISION' %}bg-warning
+                                {% else %}bg-secondary{% endif %}">
+                                {{ activity.status }}
+                            </span>
+                        </div>
+                        <small class="text-muted">{{ activity.date }} | {{ activity.village_name }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
