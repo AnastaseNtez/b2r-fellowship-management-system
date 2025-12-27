@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders', # Highly recommended for API development
+    'crispy_forms',
+    'crispy_bootstrap5',
     
     # My Capstone apps
     'accounts.apps.AccountsConfig',      # 1. User Profile and Roles
@@ -167,6 +169,9 @@ SIMPLE_JWT = {
 }
 
 # Authentication Settings
-LOGIN_REDIRECT_URL = 'dashboard'  # Redirects to /fellows/dashboard/
+LOGIN_REDIRECT_URL = 'smart_redirect'
 LOGOUT_REDIRECT_URL = 'login'     # Redirects to the login page
 LOGIN_URL = 'login'               # The name of our login URL
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

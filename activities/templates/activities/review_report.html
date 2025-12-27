@@ -1,48 +1,86 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block title %}Review Report | B2R FARMS{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-dark text-white d-flex justify-content-between">
-                    <h4 class="mb-0">Review Activity Report</h4>
-                    <span class="badge bg-warning text-dark">{{ report.status }}</span>
-                </div>
-                <div class="card-body">
-                    <h5>Fellow: {{ report.fellow.user.get_full_name }}</h5>
-                    <hr>
-                    <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Date:</strong></div>
-                        <div class="col-sm-8">{{ report.date }}</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Activity Type:</strong></div>
-                        <div class="col-sm-8">{{ report.activity_type }}</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Hours Spent:</strong></div>
-                        <div class="col-sm-8">{{ report.hours_spent }} hours</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Location:</strong></div>
-                        <div class="col-sm-8">{{ report.location_details }}</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Description:</strong></div>
-                        <div class="col-sm-8">{{ report.description }}</div>
-                    </div>
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold">Review Training Report</h2>
+                <a href="{% url 'mentor_dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
 
-                    <form method="post" class="mt-4">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0">Activity Details from {{ report.fellow.user.get_full_name }}</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold">Training Topic</label>
+                            <p class="fs-5">{{ report.training_topic }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold">Date & Location</label>
+                            <p class="fs-5">{{ report.date|date:"F d, Y" }} — {{ report.village_name }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text-muted small text-uppercase fw-bold">Farmers Trained</label>
+                            <p class="fs-5">{{ report.number_of_farmers_trained }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text-muted small text-uppercase fw-bold">Method</label>
+                            <p class="fs-5">{{ report.get_training_method_display }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text-muted small text-uppercase fw-bold">Duration</label>
+                            <p class="fs-5">{{ report.duration_hours }} Hours</p>
+                        </div>
+                        <div class="col-12">
+                            <hr>
+                            <label class="text-muted small text-uppercase fw-bold">Challenges & Notes</label>
+                            <p class="mt-2 text-dark">{{ report.challenges_notes|default:"No notes provided." }}</p>
+                        </div>
+                        {% if report.photos %}
+                        <div class="col-12">
+                            <label class="text-muted small text-uppercase fw-bold d-block mb-2">Attached Photo</label>
+                            <img src="{{ report.photos.url }}" class="img-fluid rounded shadow-sm" style="max-height: 300px;" alt="Training Photo">
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Your Evaluation</h5>
+                    <form method="POST">
                         {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="mentor_comments" class="form-label fw-bold">Feedback / Revision Instructions</label>
+                            <textarea 
+                                name="mentor_comments" 
+                                id="mentor_comments" 
+                                class="form-control" 
+                                rows="4" 
+                                placeholder="Explain what specifically needs to be fixed if requesting a revision..."
+                            >{{ report.mentor_comments|default:'' }}</textarea>
+                            <div class="form-text mt-2">
+                                Your comments will be shown to the Fellow on their dashboard and edit page.
+                            </div>
+                        </div>
+
                         <div class="d-flex gap-3">
-                            <button type="submit" name="action" value="approve" class="btn btn-success flex-grow-1">
-                                Approve Report
+                            <button type="submit" name="action" value="approve" class="btn btn-success btn-lg px-5">
+                                <i class="bi bi-check-circle me-2"></i> Approve Report
                             </button>
-                            <button type="submit" name="action" value="reject" class="btn btn-danger flex-grow-1">
-                                Reject Report
+                            <button type="submit" name="action" value="reject" class="btn btn-warning btn-lg px-5">
+                                <i class="bi bi-exclamation-triangle me-2"></i> Request Revision
                             </button>
-                            <a href="{% url 'mentor_dashboard' %}" class="btn btn-outline-secondary">Back</a>
                         </div>
                     </form>
                 </div>

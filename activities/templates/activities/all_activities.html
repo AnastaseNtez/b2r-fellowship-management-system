@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}All Training Activities | B2R FARMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 fw-bold">Full Activity History</h1>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Village</th>
+                    <th>Topic</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in activities %}
+                <tr>
+                    <td>{{ report.date|date:"M d, Y" }}</td>
+                    <td class="fw-bold">{{ report.village_name }}</td>
+                    <td>{{ report.training_topic }}</td>
+                    <td>
+                        {% if report.status == 'APPROVED' %}
+                            <span class="badge bg-success">APPROVED</span>
+                        {% elif report.status == 'REVISION' %}
+                            <span class="badge bg-danger">REVISION</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">PENDING</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if report.status == 'REVISION' %}
+                            <a href="{% url 'edit_report' report.pk %}" class="btn btn-sm btn-danger">Fix Now</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center py-4">No reports found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

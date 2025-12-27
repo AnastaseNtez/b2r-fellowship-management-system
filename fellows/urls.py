@@ -10,11 +10,11 @@ router = DefaultRouter()
 # router.register(r'', views.FellowViewSet) 
 
 urlpatterns = [
-    # This maps to the /register/ part of the URL (e.g., /fellows/register/)
     path('register/', views.fellow_register_view, name='fellow_register'), 
 
-    # This handles the API requests (e.g., /api/fellows/)
+    # Rename 'fellow_dashboard' to 'dashboard' 
+    # This must match LOGIN_REDIRECT_URL = 'dashboard' in settings.py
+    path('dashboard/', views.dashboard_view, name='dashboard'), 
+
     path('', include(router.urls)), 
-    
-    path('dashboard/', dashboard_view, name='dashboard'), # Dashboard URL
 ]

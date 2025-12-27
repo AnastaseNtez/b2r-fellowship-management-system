@@ -3,6 +3,11 @@ from fellows.models import Fellow
 from locations.models import Sector 
 
 class TrainingActivity(models.Model):
+    """
+    Model representing a training session conducted by a Fellow.
+    Includes fields for tracking data, location, and mentor approval status.
+    """
+
     # --- Status Choices ---
     class Status(models.TextChoices):
         PENDING = 'PENDING', 'Pending Review'
@@ -51,13 +56,18 @@ class TrainingActivity(models.Model):
     success_stories = models.TextField(blank=True, null=True)
     photos = models.ImageField(upload_to='training_photos/', blank=True, null=True)
 
-    # --- NEW: Mentor Approval Fields ---
+    # --- Mentor Approval Fields ---
     status = models.CharField(
         max_length=20, 
         choices=Status.choices, 
         default=Status.PENDING,
         help_text="The current approval status of this report."
     )
+    
+    # Flag to track if the fellow updated an activity after a revision request
+    is_resubmitted = models.BooleanField(default=False)
+
+    # Mentor feedback field to help Fellows understand required updates
     mentor_comments = models.TextField(
         blank=True, 
         null=True,
@@ -73,5 +83,5 @@ class TrainingActivity(models.Model):
         verbose_name_plural = "Training Activities"
 
     def __str__(self):
-        # Corrected to use the property we built in the Fellow model earlier
+        # Utilizes the get_full_name property from the Fellow model
         return f"Activity by {self.fellow.get_full_name} on {self.date}"

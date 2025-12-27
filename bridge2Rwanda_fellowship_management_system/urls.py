@@ -9,9 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # --- GATEKEEPER: The Main Entry Point ---
-    # This ensures that when a user visits http://127.0.0.1:8000/, 
-    # they are automatically checked for a role and redirected.
-    path('', smart_redirect, name='index'),
+    # Redirects logged-in users to their respective dashboards
+    path('', smart_redirect, name='smart_redirect'),
 
     # --- Web Authentication (Login/Logout) ---
     path('accounts/login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
@@ -23,23 +22,24 @@ urlpatterns = [
     # 2. Locations AJAX URLs
     path('locations/', include('locations.urls')), 
     
-    # 3. FELLOWS APP - WEB VIEWS
+    # 3. FELLOWS APP - WEB VIEWS & DASHBOARD
+    # This inclusion makes the 'dashboard' name available globally
     path('fellows/', include('fellows.urls')),
-
-    # 4. FELLOWS APP - API ENDPOINTS
-    path('api/fellows/', include('fellows.urls')),
     
-    # 5. Activities App URLs
-    path('activities/', include('activities.urls')), # Web views for submitting reports
-    path('api/activities/', include('activities.urls')), # API endpoints
+    # 4. Activities App URLs
+    # Includes 'mentor_dashboard' and 'submit_activity'
+    path('activities/', include('activities.urls')), 
 
-    # 6. Mentors App URLs
+    # 5. Mentors App URLs
     path('mentors/', include('mentors.urls')),
+
+    # 6. API ENDPOINTS (Separate prefixes for clarity)
+    path('api/fellows/', include('fellows.urls')),
+    path('api/activities/', include('activities.urls')),
 
 ]
 
 # --- Static and Media Files ---
-# This allows Django to serve images (like training photos) during development.
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

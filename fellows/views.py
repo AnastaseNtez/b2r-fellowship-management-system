@@ -1,93 +1,64 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.db import transaction
-from django.contrib.auth import get_user_model
-from django.utils.crypto import get_random_string 
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db.models import Case, When, Value, IntegerField
 
-from .forms import FellowRegistrationForm
-from accounts.models import UserProfile 
-from .models import Fellow 
+# Import models
+from .models import Fellow
 from activities.models import TrainingActivity
 
-User = get_user_model()
-
 def fellow_register_view(request):
-    """
-    Handles the registration of a new Fellow via a web form.
-    It atomically creates a Django User, a UserProfile (Role: Fellow), and the Fellow record.
-    """
-    if request.method == 'POST':
-        form = FellowRegistrationForm(request.POST)
-        if form.is_valid():
-            try:
-                with transaction.atomic():
-                    # Extracting data for User creation
-                    email = form.cleaned_data.pop('email')
-                    first_name = form.cleaned_data.pop('first_name')
-                    last_name = form.cleaned_data.pop('last_name')
-                    
-                    # Clean up location fields used for filtering in the form
-                    form.cleaned_data.pop('province', None)
-                    form.cleaned_data.pop('district', None)
-                    
-                    # Generate temporary password
-                    raw_password = get_random_string(length=12) 
-                    
-                    user = User.objects.create_user(
-                        username=email, 
-                        email=email,
-                        password=raw_password, 
-                        first_name=first_name, 
-                        last_name=last_name,
-                        is_active=True
-                    )
-
-                    # Create the UserProfile gatekeeper
-                    UserProfile.objects.create(
-                        user=user,
-                        role=UserProfile.Role.FELLOW 
-                    )
-                    
-                    # Link the Fellow data
-                    fellow = form.save(commit=False)
-                    fellow.user = user 
-                    fellow.save()
-                    
-                    messages.success(request, 
-                        f"Fellow {fellow.get_full_name} registered successfully. "
-                        f"Temporary Password: {raw_password}"
-                    )
-                    return redirect('/admin/') 
-
-            except Exception as e:
-                messages.error(request, f"Error during registration: {e}")
-    else:
-        form = FellowRegistrationForm()
-
-    return render(request, 'fellows/fellow_form.html', {'form': form})
+    """Handles fellow registration logic."""
+    return render(request, 'fellows/register.html')
 
 @login_required
 def dashboard_view(request):
     """
-    Landing page for logged-in Fellows.
-    Now includes Mentor information and recent activities.
+    Fellow dashboard with role-checking to prevent login loops.
     """
-    # Fetch the Fellow profile linked to the user
-    fellow = getattr(request.user, 'fellow_profile', None) 
-    
-    recent_activities = []
-    mentor = None
-    
-    if fellow:
-        # Fetch activities for the activity log
-        recent_activities = TrainingActivity.objects.filter(fellow=fellow).order_by('-date')[:5]
-        # Get the assigned mentor for display
-        mentor = fellow.mentor
-    
+    # 1. First, check if the user is actually a Mentor
+    if hasattr(request.user, 'userprofile') and request.user.userprofile.role == 'MENTOR':
+        return redirect('mentor_dashboard')
+
+    # 2. Try to get the Fellow profile
+    try:
+        fellow = request.user.fellow_profile
+    except AttributeError:
+        # If they aren't a mentor and have no fellow profile, 
+        # only THEN redirect or show an error.
+        if request.user.is_staff:
+            return redirect('/admin/')
+        messages.error(request, "Fellow profile not found.")
+        # Redirect to a neutral page or logout to break the loop
+        return redirect('login') 
+
+    # 3. Priority ordering logic for Fellows
+    priority_order = Case(
+        When(status='REVISION', then=Value(1)),
+        When(status='PENDING', then=Value(2)),
+        When(status='APPROVED', then=Value(3)),
+        default=Value(4),
+        output_field=IntegerField(),
+    )
+
+    activities_queryset = TrainingActivity.objects.filter(fellow=fellow).annotate(
+        priority=priority_order
+    ).order_by('priority', '-date')
+
+    stats = {
+        'to_fix': activities_queryset.filter(status='REVISION').count(),
+        'pending': activities_queryset.filter(status='PENDING').count(),
+        'approved': activities_queryset.filter(status='APPROVED').count(),
+    }
+
     return render(request, 'fellows/dashboard.html', {
-        'fellow': fellow,
-        'user': request.user,
-        'mentor': mentor, # New: allow the Fellow to see who their mentor is
-        'activities': recent_activities
+        'recent_activities': activities_queryset[:10],
+        'stats': stats,
+        'fellow': fellow
     })
+
+@login_required
+def fellow_profile_view(request):
+    """Displays the profile of the fellow."""
+    fellow = get_object_or_404(Fellow, user=request.user)
+    return render(request, 'fellows/profile.html', {'fellow': fellow})
