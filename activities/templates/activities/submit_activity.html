@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if edit_mode %}Edit Training Report{% else %}Submit Activity{% endif %} | B2R FARMS{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            
+            {% if edit_mode and report.status == 'REVISION' %}
+            <div class="alert alert-danger shadow-sm border-start border-4 border-danger mb-4">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="bi bi-exclamation-octagon-fill fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="alert-heading fw-bold">Revision Requested</h5>
+                        <p class="mb-1 text-dark"><strong>Mentor's Instructions:</strong></p>
+                        <p class="mb-0 italic text-muted">"{{ report.mentor_comments|default:'Please review the data provided and resubmit.' }}"</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="card shadow border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h3 class="mb-0 h4">
+                        <i class="bi bi-journal-plus me-2"></i>
+                        {% if edit_mode %}Edit Training Report{% else %}Submit Training Activity{% endif %}
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" id="activityForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.date|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.training_topic|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.village_name|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.duration_hours|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.number_of_farmers_trained|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.training_method|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        {{ form.challenges_notes|as_crispy_field }}
+                        {{ form.success_stories|as_crispy_field }}
+                        
+                        <div class="mb-3">
+                            {{ form.photos|as_crispy_field }}
+                            {% if edit_mode and report.photos %}
+                                <div class="mt-2 p-2 border rounded bg-light">
+                                    <span class="text-muted small">Current File:</span> 
+                                    <a href="{{ report.photos.url }}" target="_blank" class="text-decoration-none">
+                                        <i class="bi bi-image me-1"></i>View Uploaded Attachment
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mt-4 d-flex justify-content-between align-items-center border-top pt-3">
+                            <a href="{% url 'all_activities' %}" class="btn btn-outline-secondary px-4">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm">
+                                {% if edit_mode %}Update & Resubmit{% else %}Submit Report{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

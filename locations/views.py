@@ -1,42 +1,82 @@
-# locations/views.py
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.db.models import Sum, Count
 
-from django.shortcuts import render
-from django.http import JsonResponse
 from .models import Province, District, Sector
+from activities.models import TrainingActivity
 
-# NOTE: The render view below is generally not needed if you use this for AJAX, 
-# but including it for completeness if you had a locations landing page.
-# def locations_home(request):
-# return render(request, 'locations/home.html') 
+# --- 1. Province API ---
+class ProvinceListView(APIView):
+    """GET /api/locations/provinces/ - List all provinces."""
+    permission_classes = [IsAuthenticated]
 
-def load_districts(request):
-    """
-    AJAX endpoint to load districts based on the selected province ID.
-    Returns JSON: {district_id: district_name, ...}
-    """
-    province_id = request.GET.get('province_id')
-    
-    # 1. Filter districts based on the province ID
-    districts = District.objects.filter(province_id=province_id).order_by('name')
-    
-    # 2. Serialize the data into the format expected by the JavaScript: {id: name}
-    data = {district.pk: district.name for district in districts}
-    
-    # 3. Return the data as a JSON response
-    return JsonResponse(data)
+    def get(self, request):
+        provinces = Province.objects.all().values('id', 'name', 'code')
+        return Response(list(provinces))
 
-def load_sectors(request):
-    """
-    AJAX endpoint to load sectors based on the selected district ID.
-    Returns JSON: {sector_id: sector_name, ...}
-    """
-    district_id = request.GET.get('district_id')
-    
-    # 1. Filter sectors based on the district ID
-    sectors = Sector.objects.filter(district_id=district_id).order_by('name')
+# --- 2. District API ---
+class DistrictListView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    # 2. Serialize the data into the format expected by the JavaScript: {id: name}
-    data = {sector.pk: sector.name for sector in sectors}
+    def get(self, request):
+        # This checks both DRF query_params AND standard GET params
+        province_id = request.query_params.get('province_id') or request.GET.get('province_id')
+        districts = District.objects.all()
+        
+        if province_id:
+            districts = districts.filter(province_id=province_id)
+            
+        data = districts.values('id', 'name', 'province_id', 'province__name')
+        return Response(list(data))
+
+# --- 3. Sector API ---
+class SectorListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # This checks both DRF query_params AND standard GET params
+        district_id = request.query_params.get('district_id') or request.GET.get('district_id')
+        sectors = Sector.objects.all()
+        
+        if district_id:
+            sectors = sectors.filter(district_id=district_id)
+            
+        data = sectors.values('id', 'name', 'district_id', 'district__name')
+        return Response(list(data))
+
+# --- 4. Sector Coverage API ---
+class SectorCoverageAPIView(APIView):
+    """
+    GET /api/locations/sectors/{id}/coverage/
+    Aggregates approved training impact data for a specific sector.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        sector = get_object_or_404(Sector, id=id)
+        
+        # Calculate impact from the TrainingActivity model
+        impact_stats = TrainingActivity.objects.filter(
+            sector=sector, 
+            status='APPROVED'
+        ).aggregate(
+            total_farmers=Sum('number_of_farmers_trained'),
+            total_sessions=Count('id')
+        )
+
+        return Response({
+            "sector_id": sector.id,
+            "sector_name": sector.name,
+            "district": sector.district.name,
+            "province": sector.district.province.name,
+            "total_farmers_trained": impact_stats['total_farmers'] or 0,
+            "total_sessions": impact_stats['total_sessions'] or 0,
+            # Calculated coverage metric for B2R stakeholders
+            "coverage_level": "High" if (impact_stats['total_farmers'] or 0) > 100 else "Active"
+        })
     
-    # 3. Return the data as a JSON response
-    return JsonResponse(data)
+# Aliases to support existing AJAX calls in your forms
+load_districts = DistrictListView.as_view()
+load_sectors = SectorListView.as_view()

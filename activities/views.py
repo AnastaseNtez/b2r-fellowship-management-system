@@ -1,191 +1,220 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Sum, Count, Q
+from django.http import HttpResponse
 from rest_framework import viewsets, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-import csv
-from django.http import HttpResponse
 
-from .forms import ActivityReportForm
+# Models & Forms
 from .models import TrainingActivity
-from .serializers import TrainingActivitySerializer 
-from .utils import get_program_metrics
-from fellows.models import Fellow 
+from .forms import ActivityReportForm
+from .serializers import TrainingActivitySerializer
+from .permissions import IsOwnerOrMentor
+from fellows.models import Fellow  # Ensure this import exists
 
-# --- FELLOW WEB VIEWS ---
+# --- 1. HELPER: MENTOR CHECK ---
+def is_mentor(user):
+    """Checks if the user has mentor status or is staff/superuser."""
+    return user.is_authenticated and (
+        user.is_staff or 
+        user.is_superuser or 
+        hasattr(user, 'mentor')
+    )
+
+# --- 2. FELLOW WEB VIEWS ---
 
 @login_required
 def submit_activity_view(request):
-    """Allows Fellows to submit new training reports."""
+    # Try to find the Fellow profile by querying the model directly
+    try:
+        fellow_profile = Fellow.objects.get(user=request.user)
+    except Fellow.DoesNotExist:
+        return HttpResponse(
+            f"Debug Info: Logged in as {request.user.email}. "
+            f"No Fellow record found linked to this specific User ID.", 
+            status=403
+        )
+
     if request.method == 'POST':
         form = ActivityReportForm(request.POST, request.FILES)
         if form.is_valid():
             activity = form.save(commit=False)
-            profile = request.user.fellow_profile
-            activity.fellow = profile
-            activity.sector = profile.assigned_sector
+            activity.fellow = fellow_profile 
+            activity.sector = fellow_profile.assigned_sector
             activity.save()
-            messages.success(request, "Activity report submitted successfully!")
-            return redirect('dashboard')
+            return redirect('all_activities')
     else:
         form = ActivityReportForm()
-    return render(request, 'activities/submit_report.html', {'form': form, 'edit_mode': False})
+        
+    return render(request, 'activities/submit_activity.html', {'form': form})
 
 @login_required
 def edit_report_view(request, pk):
-    """Allows Fellows to see mentor feedback and update their report."""
-    # Ensure the fellow can only edit their own reports that are marked for REVISION
-    report = get_object_or_404(TrainingActivity, pk=pk, fellow=request.user.fellow_profile)
-    
-    if report.status != 'REVISION':
-        messages.error(request, "This report cannot be edited at this time.")
-        return redirect('dashboard')
-
+    """Allows Fellows to update a report, especially if marked for REVISION."""
+    report = get_object_or_404(TrainingActivity, pk=pk, fellow__user=request.user)
     if request.method == 'POST':
         form = ActivityReportForm(request.POST, request.FILES, instance=report)
         if form.is_valid():
-            activity = form.save(commit=False)
-            activity.status = 'PENDING'
-            activity.is_resubmitted = True
-            # Optional: Clear comments so the mentor sees a fresh resubmission
-            # activity.mentor_comments = "" 
-            activity.save()
-            messages.success(request, "Report resubmitted for review!")
-            return redirect('dashboard')
+            # If it was in REVISION, move it back to PENDING for re-review
+            if report.status == 'REVISION':
+                report.status = 'PENDING'
+                report.is_resubmitted = True
+            form.save()
+            return redirect('all_activities')
     else:
         form = ActivityReportForm(instance=report)
-    
-    # Passing 'report' here allows submit_report.html to show report.mentor_comments
-    return render(request, 'activities/submit_report.html', {
-        'form': form,
+    return render(request, 'activities/submit_activity.html', {
+        'form': form, 
         'edit_mode': True,
-        'report': report
+        'report': report # Passing report so we can show Mentor comments in the template
     })
 
 @login_required
 def all_activities_view(request):
-    """Displays every report submitted by the fellow."""
-    try:
-        fellow = request.user.fellow_profile
-    except AttributeError:
-        messages.error(request, "Fellow profile not found.")
-        return redirect('login')
+    """Corrected order_by syntax"""
+    activities = TrainingActivity.objects.filter(fellow__user=request.user).order_by('-date')
+    return render(request, 'activities/all_activities.html', {'activities': activities})
 
-    activities = TrainingActivity.objects.filter(fellow=fellow).order_by('-date')
-    
-    return render(request, 'activities/all_activities.html', {
-        'activities': activities
-    })
-
-# --- MENTOR WEB VIEWS ---
+# --- 3. MENTOR WEB VIEWS ---
 
 @login_required
+@user_passes_test(is_mentor)
 def mentor_dashboard_view(request):
-    """Portal for Mentors."""
-    # Role check to prevent Fellows from accessing Mentor data
-    if not hasattr(request.user, 'userprofile') or request.user.userprofile.role != 'MENTOR':
-        return redirect('dashboard')
-    
-    # Use order_by, NOT order_of
-    pending_reports = TrainingActivity.objects.filter(
-        fellow__mentor__user=request.user, # Adjust based on your Mentor model relation
-        status='PENDING'
-    ).order_by('-date')
+    """Dashboard for Mentors to see pending items."""
+    # This fetches all reports that need review
+    pending_reports = TrainingActivity.objects.filter(status='PENDING').order_by('-date')
     
     return render(request, 'activities/mentor_dashboard.html', {
         'pending_reports': pending_reports,
-        'total_pending': pending_reports.count()
+        'total_pending': pending_reports.count(),
     })
 
 @login_required
+@user_passes_test(is_mentor)
 def review_report_view(request, pk):
-    """Detailed view for Mentors to approve or reject reports with feedback."""
+    """Standardized mentor_comments naming"""
     report = get_object_or_404(TrainingActivity, pk=pk)
-    
-    if not hasattr(request.user, 'mentor_profile') or request.user.mentor_profile != report.fellow.mentor:
-        messages.error(request, "You are not authorized to review this report.")
-        return redirect('mentor_dashboard')
-
     if request.method == 'POST':
         action = request.POST.get('action')
-        feedback = request.POST.get('mentor_comments') 
+        # Matches the 'name' attribute in your review_report.html textarea
+        report.mentor_comments = request.POST.get('mentor_comments') 
         
-        report.mentor_comments = feedback
-
         if action == 'approve':
             report.status = 'APPROVED'
-            report.is_resubmitted = False
-            messages.success(request, "Report approved.")
         elif action == 'reject':
             report.status = 'REVISION'
-            report.is_resubmitted = False
-            messages.warning(request, "Report sent back for revision with feedback.")
-        
+            
         report.save()
         return redirect('mentor_dashboard')
-
     return render(request, 'activities/review_report.html', {'report': report})
 
+# --- 4. ANALYTICS & EXPORT ---
+
 @login_required
-def approve_report(request, pk):
-    """Quick approval endpoint."""
-    if not hasattr(request.user, 'mentor_profile'):
-        return redirect('dashboard')
-        
-    report = get_object_or_404(TrainingActivity, pk=pk)
-    
-    if report.fellow.mentor != request.user.mentor_profile:
-        messages.error(request, "Unauthorized.")
-        return redirect('mentor_dashboard')
-
-    report.status = 'APPROVED'
-    report.is_resubmitted = False
-    report.save()
-    messages.success(request, "Activity approved successfully.")
-    return redirect('mentor_dashboard')
-
-# --- REST API & EXPORTS ---
-
-class TrainingActivityViewSet(viewsets.ModelViewSet):
-    """API endpoint with role-based data filtering."""
-    serializer_class = TrainingActivitySerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_staff:
-            return TrainingActivity.objects.all()
-        if hasattr(user, 'mentor_profile'):
-            return TrainingActivity.objects.filter(fellow__mentor=user.mentor_profile)
-        if hasattr(user, 'fellow_profile'):
-            return TrainingActivity.objects.filter(fellow=user.fellow_profile)
-        return TrainingActivity.objects.filter(status='APPROVED')
-
-    def perform_create(self, serializer):
-        serializer.save(fellow=self.request.user.fellow_profile)
-
-class DashboardStatsAPIView(APIView):
-    """Returns high-level impact metrics."""
-    def get(self, request):
-        metrics = get_program_metrics()
-        return Response(metrics)
-
+@user_passes_test(is_mentor)
 def export_activities_csv(request):
-    """Generates a CSV of approved reports."""
+    """Exports all activity data to CSV for reporting."""
+    import csv
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="b2r_training_report.csv"'
+    response['Content-Disposition'] = 'attachment; filename="b2r_impact_data.csv"'
     writer = csv.writer(response)
-    writer.writerow(['Date', 'Fellow', 'District', 'Sector', 'Topic', 'Farmers Trained'])
-
-    activities = TrainingActivity.objects.filter(status='APPROVED').select_related('fellow', 'sector__district')
-    for act in activities:
+    writer.writerow(['Fellow', 'Date', 'Topic', 'District', 'Farmers Trained', 'Status'])
+    
+    for activity in TrainingActivity.objects.all():
         writer.writerow([
-            act.date, 
-            act.fellow.user.get_full_name(), 
-            act.sector.district.name,
-            act.sector.name,
-            act.training_topic,
-            act.number_of_farmers_trained
+            activity.fellow.user.get_full_name(),
+            activity.date,
+            activity.training_topic,
+            activity.sector.district.name,
+            activity.number_of_farmers_trained,
+            activity.status
         ])
     return response
+
+@login_required
+def impact_summary(request):
+    """
+    Aggregates fellowship data for the Impact Summary page.
+    Only includes 'APPROVED' activities to ensure data integrity.
+    """
+    # 1. Filter for only approved logs
+    approved_data = TrainingActivity.objects.filter(status='APPROVED')
+
+    # 2. Top-level Stat Cards
+    # Uses the correct field name from your error: 'number_of_farmers_trained'
+    total_stats = approved_data.aggregate(
+        total_farmers=Sum('number_of_farmers_trained'),
+        total_sessions=Count('id')
+    )
+
+    total_farmers = total_stats['total_farmers'] or 0
+    total_sessions = total_stats['total_sessions'] or 0
+    
+    # Calculate average (handle division by zero)
+    avg_reach = round(total_farmers / total_sessions, 1) if total_sessions > 0 else 0
+
+    # 3. Geographic Coverage Table
+    # Aggregates reach by District (via the Sector relationship)
+    geographic_data = approved_data.values('sector__district__name') \
+        .annotate(
+            sessions=Count('id'),
+            farmers=Sum('number_of_farmers_trained')
+        ).order_by('-farmers')
+
+    # 4. Training Topic Reach (for the sidebar/chart)
+    topic_data = approved_data.values('training_topic') \
+        .annotate(total=Sum('number_of_farmers_trained')) \
+        .order_by('-total')[:5]
+
+    context = {
+        'total_farmers': total_farmers,
+        'total_sessions': total_sessions,
+        'avg_reach': avg_reach,
+        'geographic_data': geographic_data,
+        'topic_data': topic_data,
+    }
+
+    return render(request, 'activities/impact_summary.html', context)
+
+# --- 5. REST API (Used by JavaScript Dashboard) ---
+
+class TrainingActivityViewSet(viewsets.ModelViewSet):
+    """Standard API for Activity logs."""
+    serializer_class = TrainingActivitySerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrMentor]
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return TrainingActivity.objects.all()
+        return TrainingActivity.objects.filter(fellow__user=self.request.user)
+
+class ImpactReportDataAPIView(APIView):
+    """API providing data for the Leaderboard."""
+    def get(self, request):
+        data = TrainingActivity.objects.filter(status='APPROVED').values(
+            'sector__district__name'
+        ).annotate(
+            sessions=Count('id'),
+            farmers=Sum('number_of_farmers_trained')
+        ).order_by('-farmers')
+        return Response({'by_district': list(data)})
+
+class DashboardStatsAPIView(APIView):
+    """API providing summary stats (total farmers, pending count)."""
+    def get(self, request):
+        stats = TrainingActivity.objects.aggregate(
+            pending=Count('id', filter=Q(status='PENDING')),
+            total_farmers=Sum('number_of_farmers_trained', filter=Q(status='APPROVED')) or 0
+        )
+        return Response(stats)
+
+class FellowPerformanceAPIView(APIView):
+    """API for ranking individual Fellow impact."""
+    def get(self, request):
+        perf = TrainingActivity.objects.filter(status='APPROVED').values(
+            'fellow__user__first_name', 'fellow__user__last_name'
+        ).annotate(
+            total_trained=Sum('number_of_farmers_trained')
+        ).order_by('-total_trained')
+        return Response(list(perf))

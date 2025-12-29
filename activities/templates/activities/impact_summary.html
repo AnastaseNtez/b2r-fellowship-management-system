@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Program Impact Summary | B2R Farms{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Impact Report</li>
+                </ol>
+            </nav>
+            <h1 class="fw-bold mb-0">Program Impact Summary</h1>
+            <p class="text-muted">Aggregate data across all fellowship sectors as of {% now "F Y" %}.</p>
+        </div>
+        <div>
+            <button class="btn btn-outline-success shadow-sm" onclick="window.print()">
+                <i class="bi bi-printer me-2"></i>Print Report
+            </button>
+            <button class="btn btn-success shadow-sm ms-2">
+                <i class="bi bi-download me-2"></i>Export CSV
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm bg-primary text-white overflow-hidden">
+                <div class="card-body p-4 position-relative">
+                    <div class="position-absolute end-0 bottom-0 opacity-25 p-3">
+                        <i class="bi bi-people" style="font-size: 4rem;"></i>
+                    </div>
+                    <p class="text-uppercase small fw-bold mb-1 opacity-75">Total Farmers Trained</p>
+                    <h2 class="display-4 fw-bold mb-0">{{ total_farmers }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm bg-dark text-white overflow-hidden">
+                <div class="card-body p-4 position-relative">
+                    <div class="position-absolute end-0 bottom-0 opacity-25 p-3">
+                        <i class="bi bi-journal-check" style="font-size: 4rem;"></i>
+                    </div>
+                    <p class="text-uppercase small fw-bold mb-1 opacity-75">Training Sessions</p>
+                    <h2 class="display-4 fw-bold mb-0">{{ total_sessions }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm border-start border-success border-4">
+                <div class="card-body p-4 position-relative">
+                    <div class="position-absolute end-0 bottom-0 text-success opacity-25 p-3">
+                        <i class="bi bi-graph-up-arrow" style="font-size: 4rem;"></i>
+                    </div>
+                    <p class="text-uppercase small fw-bold text-muted mb-1">Avg Reach Per Session</p>
+                    <h2 class="display-4 fw-bold text-success mb-0">{{ avg_reach }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-bold text-dark">Geographic Coverage</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">District</th>
+                                    <th class="text-center">Sessions</th>
+                                    <th class="text-end pe-4">Farmers Reached</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in geographic_data %}
+                                <tr>
+                                    <td class="ps-4 fw-semibold text-primary">{{ entry.sector__district__name }}</td>
+                                    <td class="text-center">{{ entry.sessions }}</td>
+                                    <td class="text-end pe-4 fw-bold">{{ entry.farmers }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center py-5 text-muted">
+                                        <i class="bi bi-info-circle mb-2 d-block" style="font-size: 1.5rem;"></i>
+                                        No approved training activities found in the database.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-bold text-dark">Top Training Topics</h5>
+                </div>
+                <div class="card-body">
+                    {% for topic in topic_data %}
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small text-truncate" style="max-width: 200px;">{{ topic.training_topic }}</span>
+                            <span class="badge bg-success-subtle text-success rounded-pill">{{ topic.total }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {% widthratio topic.total total_farmers 100 %}%"></div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5">
+                        <p class="text-muted small">No topic data available.</p>
+                    </div>
+                    {% endfor %}
+                    <hr class="my-4">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

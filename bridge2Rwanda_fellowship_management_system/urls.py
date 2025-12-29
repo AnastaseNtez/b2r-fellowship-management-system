@@ -17,7 +17,7 @@ urlpatterns = [
     path('accounts/logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
     # 1. Authentication App Logic
-    path('accounts/', include('accounts.urls')), 
+    path('api/auth/', include('accounts.urls')),
     
     # 2. Locations AJAX URLs
     path('locations/', include('locations.urls')), 
@@ -36,6 +36,7 @@ urlpatterns = [
     # 6. API ENDPOINTS (Separate prefixes for clarity)
     path('api/fellows/', include('fellows.urls')),
     path('api/activities/', include('activities.urls')),
+    path('api/locations/', include('locations.urls')),
 
 ]
 

@@ -2,45 +2,33 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 
-# Explicitly import the views to match your views.py logic
-from .views import (
-    submit_activity_view, 
-    review_report_view, 
-    mentor_dashboard_view,
-    DashboardStatsAPIView,
-    export_activities_csv,
-    TrainingActivityViewSet
-)
-
-# Router for TrainingActivity API endpoints
+# 1. Setup the Router
 router = DefaultRouter()
-router.register(r'logs', TrainingActivityViewSet, basename='trainingactivity')
+router.register(r'logs', views.TrainingActivityViewSet, basename='trainingactivity')
 
 urlpatterns = [
-    # --- 1. Standard Web Views ---
-    # View for Fellows to log sessions
-    path('submit/', submit_activity_view, name='submit_activity'),
-
-    # View for Mentors to see their assigned tasks
-    path('mentor/dashboard/', mentor_dashboard_view, name='mentor_dashboard'),
-
-    # View for Mentors to Approve/Reject specific reports
-    path('review/<int:pk>/', review_report_view, name='review_report'),
-    
-    # --- 2. Reporting & Data Exports ---
-    # CSV download for donors and admins
-    path('export/csv/', export_activities_csv, name='export_activities_csv'),
-
-    # --- 3. API Endpoints ---
-    # High-level metrics for the analytics dashboard
-    path('api/summary/', DashboardStatsAPIView.as_view(), name='api_dashboard_summary'),
-
-    # Automatic REST routes for logs
-    path('api/', include(router.urls)), 
-
+    # --- 1. Web Views (Fellows) ---
+    path('submit/', views.submit_activity_view, name='submit_activity'),
     path('edit/<int:pk>/', views.edit_report_view, name='edit_report'),
-    
-    path('approve/<int:pk>/', views.approve_report, name='approve_report'),
-
     path('fellow/all-activities/', views.all_activities_view, name='all_activities'),
+
+    # --- 2. Web Views (Mentors) ---
+    path('mentor/dashboard/', views.mentor_dashboard_view, name='mentor_dashboard'),
+    path('review/<int:pk>/', views.review_report_view, name='review_report'),
+    
+    # --- 3. Reporting & Analytics ---
+    path('summary/', views.impact_summary, name='impact_summary'),
+    
+    # FIX: Restoring 'api-export-csv' name for the template
+    path('export/csv/', views.export_activities_csv, name='api-export-csv'), # Ensure this name matches
+    # Also keeping the other name just in case
+    path('reports/export/csv/', views.export_activities_csv, name='export_activities_csv'),
+
+    # --- 4. API Endpoints (Used by Dashboard JS) ---
+    path('reports/dashboard/', views.DashboardStatsAPIView.as_view(), name='api-dashboard'),
+    path('reports/impact/', views.ImpactReportDataAPIView.as_view(), name='api-impact'),
+    path('reports/fellow-performance/', views.FellowPerformanceAPIView.as_view(), name='api-performance'),
+
+    # --- 5. The API Router ---
+    path('', include(router.urls)), 
 ]

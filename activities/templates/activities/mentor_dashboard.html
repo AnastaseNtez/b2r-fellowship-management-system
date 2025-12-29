@@ -6,7 +6,30 @@
 <div class="row mb-4">
     <div class="col-md-8">
         <h1 class="display-5 fw-bold">Mentor Review Portal</h1>
-        <p class="lead text-muted">Review reports submitted by your fellows.</p>
+        <p class="lead text-muted">Review reports submitted by your fellows and monitor geographic impact.</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'api-export-csv' %}" class="btn btn-outline-dark mt-3">
+            <i class="fas fa-download me-2"></i>Export Impact Data (CSV)
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="input-group shadow-sm">
+            <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+            <input type="text" id="dashboardSearch" class="form-control border-start-0" placeholder="Type name, topic, or district...">
+            <button class="btn btn-primary" type="button" id="searchBtn">Search</button>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <select id="districtFilter" class="form-select shadow-sm">
+            <option value="">All Districts</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-secondary w-100 shadow-sm" onclick="resetFilters()">Reset All</button>
     </div>
 </div>
 
@@ -15,7 +38,7 @@
         <h5 class="mb-0 fw-bold">Pending Approval</h5>
     </div>
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover align-middle mb-0" id="pendingTable">
             <thead class="table-light">
                 <tr>
                     <th>Fellow</th>
@@ -25,45 +48,162 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="pending-table-body">
                 {% for report in pending_reports %}
-                <tr>
+                <tr class="report-row">
                     <td>
                         <div class="fw-bold">{{ report.fellow.user.get_full_name }}</div>
                         <div class="text-muted small">{{ report.fellow.user.email }}</div>
                     </td>
-                    <td>{{ report.fellow.assigned_sector.district.name }} / {{ report.fellow.assigned_sector.name }}</td>
-                    <td>
-                        {{ report.training_topic }}
-                        {% if report.is_resubmitted %}
-                        <span class="badge bg-info text-dark ms-2">RESUBMITTED</span>
-                        {% endif %}
-                    </td>
+                    <td class="location-cell">{{ report.sector.district.name }}</td>
+                    <td class="topic-cell">{{ report.training_topic }}</td>
                     <td>{{ report.date|date:"M d, Y" }}</td>
                     <td class="text-center">
                         <a href="{% url 'review_report' report.pk %}" class="btn btn-outline-primary btn-sm">Review Details</a>
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="5" class="text-center py-5 text-muted">No pending reports.</td></tr>
+                <tr id="initial-pending-empty"><td colspan="5" class="text-center py-5 text-muted">No pending reports.</td></tr>
                 {% endfor %}
+                <tr id="pending-no-results" style="display: none;">
+                    <td colspan="5" class="text-center py-4 text-danger">No matching pending reports found.</td>
+                </tr>
             </tbody>
         </table>
     </div>
 </div>
 
-<div class="row text-center mt-4">
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm py-3 bg-light">
-            <h6 class="text-muted text-uppercase small mb-1">Total Pending</h6>
-            <h2 class="fw-bold mb-0">{{ total_pending }}</h2>
-        </div>
+<div class="card shadow-sm border-0 mb-5">
+    <div class="card-header bg-success text-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold">Geographic Impact Leaderboard</h5>
+        <small class="bg-white text-success px-2 py-1 rounded fw-bold">LIVE API DATA</small>
     </div>
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm py-3 bg-light">
-            <h6 class="text-muted text-uppercase small mb-1">Resubmissions</h6>
-            <h2 class="fw-bold text-info mb-0">{{ resubmission_count }}</h2>
-        </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>District</th>
+                    <th>Total Sessions</th>
+                    <th>Farmers Trained</th>
+                    <th>Impact Status</th>
+                </tr>
+            </thead>
+            <tbody id="impact-table-body">
+                <tr id="impact-loading-row">
+                    <td colspan="4" class="text-center py-3">
+                        <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+                        <span>Loading impact data...</span>
+                    </td>
+                </tr>
+                <tr id="impact-no-results" style="display: none;">
+                    <td colspan="4" class="text-center py-4 text-danger">No matching impact data found.</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('dashboardSearch');
+    const searchBtn = document.getElementById('searchBtn');
+    const districtFilter = document.getElementById('districtFilter');
+    const impactTableBody = document.getElementById('impact-table-body');
+
+    // API URL matches the prefix in main urls.py + app urls.py
+    fetch('/api/activities/reports/impact/')
+        .then(response => response.json())
+        .then(data => {
+            const loadingRow = document.getElementById('impact-loading-row');
+            if(loadingRow) loadingRow.remove(); 
+            
+            if (data.by_district && data.by_district.length > 0) {
+                data.by_district.forEach(item => {
+                    const districtName = item.sector__district__name;
+                    
+                    // Populating the filter dropdown dynamically
+                    if (![...districtFilter.options].some(opt => opt.value === districtName)) {
+                        const opt = document.createElement('option');
+                        opt.value = districtName;
+                        opt.innerHTML = districtName;
+                        districtFilter.appendChild(opt);
+                    }
+
+                    const farmersCount = item.farmers || 0;
+                    const statusBadge = farmersCount > 100 ? 'bg-success' : 'bg-warning';
+                    const statusText = farmersCount > 100 ? 'High Impact' : 'Active';
+
+                    const noResultsRow = document.getElementById('impact-no-results');
+                    const newRow = document.createElement('tr');
+                    newRow.className = 'impact-row';
+                    newRow.innerHTML = `
+                        <td class="fw-bold district-name-cell">${districtName}</td>
+                        <td>${item.sessions}</td>
+                        <td>${farmersCount.toLocaleString()}</td>
+                        <td><span class="badge ${statusBadge}">${statusText}</span></td>
+                    `;
+                    impactTableBody.insertBefore(newRow, noResultsRow);
+                });
+            } else {
+                document.getElementById('impact-no-results').style.display = "";
+            }
+        })
+        .catch(err => {
+            console.error("API Error:", err);
+            const loadingRow = document.getElementById('impact-loading-row');
+            if(loadingRow) loadingRow.innerHTML = `<td colspan="4" class="text-center text-danger">Failed to load API data.</td>`;
+        });
+
+    function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedDistrict = districtFilter.value.toLowerCase();
+
+        // Filter Pending Approval Table
+        let pendingMatchCount = 0;
+        const pendingRows = document.querySelectorAll('.report-row');
+        pendingRows.forEach(row => {
+            const rowText = row.innerText.toLowerCase();
+            const matchesDistrict = selectedDistrict === "" || rowText.includes(selectedDistrict);
+            const matchesSearch = rowText.includes(searchTerm);
+            
+            if (matchesDistrict && matchesSearch) {
+                row.style.display = "";
+                pendingMatchCount++;
+            } else {
+                row.style.display = "none";
+            }
+        });
+        document.getElementById('pending-no-results').style.display = (pendingRows.length > 0 && pendingMatchCount === 0) ? "" : "none";
+
+        // Filter Impact Leaderboard
+        let impactMatchCount = 0;
+        const impactRows = document.querySelectorAll('.impact-row');
+        impactRows.forEach(row => {
+            const districtName = row.querySelector('.district-name-cell').innerText.toLowerCase();
+            const matchesDistrict = selectedDistrict === "" || districtName === selectedDistrict;
+            const matchesSearch = districtName.includes(searchTerm);
+
+            if (matchesDistrict && matchesSearch) {
+                row.style.display = "";
+                impactMatchCount++;
+            } else {
+                row.style.display = "none";
+            }
+        });
+        document.getElementById('impact-no-results').style.display = (impactRows.length > 0 && impactMatchCount === 0) ? "" : "none";
+    }
+
+    searchBtn.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') performSearch(); });
+    districtFilter.addEventListener('change', performSearch);
+});
+
+function resetFilters() {
+    document.getElementById('dashboardSearch').value = '';
+    document.getElementById('districtFilter').value = '';
+    document.querySelectorAll('.report-row, .impact-row').forEach(row => row.style.display = "");
+    document.getElementById('pending-no-results').style.display = "none";
+    document.getElementById('impact-no-results').style.display = "none";
+}
+</script>
 {% endblock %}

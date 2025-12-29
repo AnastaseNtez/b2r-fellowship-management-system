@@ -1,9 +1,14 @@
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile
-from django.contrib import messages 
+from django.contrib import messages
+from django.contrib.auth.models import User # Added for API
+from rest_framework import generics # Added for API
+from rest_framework.permissions import AllowAny # Added for API
 
-""" Scirpt that handles where users go after they log in"""
+from .models import UserProfile
+from .serializers import RegisterSerializer 
+
+""" Script that handles where users go after they log in """
 
 @login_required
 def smart_redirect(request):
@@ -12,19 +17,29 @@ def smart_redirect(request):
     to the appropriate dashboard.
     """
     try:
-        # Access the UserProfile linked to the logged-in user
         profile = request.user.userprofile
-        
         if profile.role == 'MENTOR':
             return redirect('mentor_dashboard')
         elif profile.role == 'FELLOW':
             return redirect('dashboard')
             
     except UserProfile.DoesNotExist:
-        # If it's a superuser/admin without a profile, send to Django Admin
-        if request.user.is_staff:
-            return redirect('/admin/')
+        if request.user.is_staff or request.user.is_superuser:
+            return redirect('mentor_dashboard')
             
-    # Default fallback if something is wrong
-    messages.error(request, "User profile not found. Please contact the administrator.")
+    messages.error(request, f"Profile for {request.user.email} not found.")
     return redirect('login')
+
+def login_view(request):
+    return render(request, 'accounts/login.html')
+
+# --- NEW API VIEW ---
+
+class RegisterView(generics.CreateAPIView):
+    """
+    POST /api/auth/register/
+    Handles API-based registration for new users.
+    """
+    queryset = User.objects.all()
+    permission_classes = (AllowAny,) # Open to public
+    serializer_class = RegisterSerializer
