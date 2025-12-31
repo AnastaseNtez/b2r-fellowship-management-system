@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">Fellow Dashboard</h1>
+        <a href="{% url 'submit_activity' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Log New Activity
+        </a>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center p-3">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small">Total Farmers Trained</h6>
+                    <h2 class="display-6 fw-bold text-success">{{ total_trained }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center p-3">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small">Recent Logs</h6>
+                    <h2 class="display-6 fw-bold text-primary">{{ recent_activities.count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center p-3">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small">Quick Actions</h6>
+                    <div class="mt-2">
+                        <a href="{% url 'all_activities' %}" class="btn btn-sm btn-outline-secondary w-100">View Full History</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Recent Submissions</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Village</th>
+                        <th>Topic</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in recent_activities %}
+                    <tr>
+                        <td>{{ activity.date|date:"M d, Y" }}</td>
+                        <td>{{ activity.village_name }}</td>
+                        <td>{{ activity.training_topic }}</td>
+                        <td>
+                            {% if activity.status == 'APPROVED' %}
+                                <span class="badge bg-success-subtle text-success">Approved</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">No recent activities found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

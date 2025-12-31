@@ -12,27 +12,12 @@ from .serializers import RegisterSerializer
 
 @login_required
 def smart_redirect(request):
-    """
-    Traffic controller: Checks the user's role and sends them 
-    to the appropriate dashboard.
-    """
-    try:
-        profile = request.user.userprofile
-        if profile.role == 'MENTOR':
-            return redirect('mentor_dashboard')
-        elif profile.role == 'FELLOW':
-            return redirect('dashboard')
-            
-    except UserProfile.DoesNotExist:
-        if request.user.is_staff or request.user.is_superuser:
-            return redirect('mentor_dashboard')
-            
-    messages.error(request, f"Profile for {request.user.email} not found.")
+    role = request.user.userprofile.role
+    if role == 'FELLOW':
+        return redirect('fellow_dashboard')  # Now points to the new summary page
+    elif role in ['ADMIN', 'COORDINATOR', 'MENTOR']:
+        return redirect('mentor_dashboard')
     return redirect('login')
-
-def login_view(request):
-    return render(request, 'accounts/login.html')
-
 # --- NEW API VIEW ---
 
 class RegisterView(generics.CreateAPIView):

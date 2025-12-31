@@ -10,6 +10,7 @@ urlpatterns = [
     # --- 1. Web Views (Fellows) ---
     path('submit/', views.submit_activity_view, name='submit_activity'),
     path('edit/<int:pk>/', views.edit_report_view, name='edit_report'),
+    path('dashboard/', views.fellow_dashboard_view, name='fellow_dashboard'),
     path('fellow/all-activities/', views.all_activities_view, name='all_activities'),
 
     # --- 2. Web Views (Mentors) ---

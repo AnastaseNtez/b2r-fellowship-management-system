@@ -1,17 +1,18 @@
 from django import forms
 from .models import TrainingActivity
+from django.utils import timezone
 
 class ActivityReportForm(forms.ModelForm):
     """
     Form for Fellows to submit and update their training activity reports.
-    Fields are synchronized with the TrainingActivity model.
+    Validated against model constraints to ensure data integrity.
     """
     class Meta:
         model = TrainingActivity
-        # These fields MUST match the field names in your models.py 
-        # and be available for rendering in submit_report.html
+        # Added 'sector' to match your updated model
         fields = [
-            'date',  
+            'date',
+            'sector', 
             'village_name', 
             'number_of_farmers_trained', 
             'training_topic', 
@@ -22,10 +23,12 @@ class ActivityReportForm(forms.ModelForm):
             'photos'
         ]
         
-        # Widgets allow us to add Bootstrap classes and specific HTML attributes
         widgets = {
             'date': forms.DateInput(
                 attrs={'type': 'date', 'class': 'form-control'}
+            ),
+            'sector': forms.Select(
+                attrs={'class': 'form-select'}
             ),
             'training_method': forms.Select(
                 attrs={'class': 'form-select'}
@@ -43,19 +46,26 @@ class ActivityReportForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'number_of_farmers_trained': forms.NumberInput(
-                attrs={'class': 'form-control'}
+                attrs={'class': 'form-control', 'min': '1'}
             ),
             'duration_hours': forms.NumberInput(
-                attrs={'class': 'form-control', 'step': '0.5'}
+                attrs={'class': 'form-control', 'step': '0.5', 'min': '0.1', 'max': '12'}
             ),
             'photos': forms.ClearableFileInput(
                 attrs={'class': 'form-control'}
             ),
         }
 
+    def clean_date(self):
+        """Redundant check to ensure the date is not in the future."""
+        date = self.cleaned_data.get('date')
+        if date and date > timezone.now().date():
+            raise forms.ValidationError("You cannot log an activity for a future date.")
+        return date
+
     def clean_number_of_farmers_trained(self):
-        """Custom validation to ensure number of farmers is not negative."""
+        """Ensures at least one farmer is trained to maintain accurate sum metrics."""
         count = self.cleaned_data.get('number_of_farmers_trained')
-        if count is not None and count < 0:
-            raise forms.ValidationError("The number of farmers trained cannot be negative.")
+        if count is not None and count < 1:
+            raise forms.ValidationError("The number of farmers trained must be at least 1.")
         return count
