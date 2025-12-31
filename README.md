@@ -1,5 +1,98 @@
-🌾 Bridge2Rwanda Farms Fellowship Management System (B2R-FMS)📌 Project OverviewThe B2R Farms Fellowship Management System (B2R-FMS) is a professional Django-based platform designed to centralize the management of the B2R Farms Fellowship Program.The system tracks 109+ Fellows stationed across Rwanda, providing a verified pipeline for logging training activities with smallholder farmers. By implementing a Mentor-led review process, the system ensures that impact data is accurate and actionable for donors and coordinators.🎯 Key FeaturesFeature AreaKey FunctionalityTarget UserIdentity & AccessJWT & Session-based Auth; Automated profile creation via Django Signals.All UsersActivity LifecycleFellows log training sessions; Mentors review, approve, or request revisions.Fellows & MentorsData IntegrityCustom validators prevent future-dated logs and illogical data (e.g., negative farmers).SystemReportingReal-time dashboards and one-click CSV Export for impact reports.Coordinators🏗️ The Mentor Review WorkflowSubmission: Fellow logs a session (Topic, Location, Duration, Farmers, Photos).Review: The activity appears on the Mentor Dashboard as "Pending Review."Action: Mentor either Approves the log or flags it for Revision with specific comments.Resubmission: If flagged, the Fellow sees a "Needs Revision" alert, updates the log, and resubmits.🗺️ API Endpoints ReferenceAll API requests require a valid JWT token in the Authorization: Bearer <token> header (except for Login/Register).🔐 AuthenticationMethodEndpointDescriptionPOST/api/auth/register/Create a new accountPOST/api/auth/login/Exchange credentials for JWT tokensPOST/api/auth/logout/Blacklist refresh token to end sessionPOST/api/auth/token/refresh/Refresh expired access tokens👨‍🌾 Fellow ManagementMethodEndpointDescriptionGET/api/fellows/List all FellowsPOST/api/fellows/Create a new Fellow recordGET/api/fellows/{id}/Get specific Fellow detailsPUT/api/fellows/{id}/Update Fellow informationGET/api/fellows/{id}/activities/Get activities for a specific FellowGET/api/fellows/statistics/General Fellow statistics📝 Training ActivitiesMethodEndpointDescriptionGET/api/activities/List all training activitiesPOST/api/activities/logs/Log a new training sessionGET/api/activities/logs/{id}/Get details of a specific logPUT/api/activities/logs/{id}/Update an activity logGET/api/activities/reports/impact/Aggregated impact statistics🌍 Geographic DataMethodEndpointDescriptionGET/api/locations/provinces/List all provincesGET/api/locations/districts/List all districtsGET/api/locations/sectors/List all sectorsGET/api/locations/sectors/{id}/coverage/Get training coverage for a sector📊 Reports & AnalyticsMethodEndpointDescriptionGET/api/activities/reports/dashboard/High-level dashboard metricsGET/api/activities/reports/impact/Detailed impact reporting dataGET/api/reports/export/csv/Download impact data as CSVGET/api/activities/reports/fellow-performance/Fellow performance leaderboard💻 Getting StartedInstall Dependencies:Bashpip install -r requirements.txt
-Database Setup:Bashpython manage.py makemigrations
-python manage.py migrate
-Run the Server:Bashpython manage.py runserver
-Access the web UI at http://127.0.0.1:8000/ or test the API at http://127.0.0.1:8000/api/.📧 ContactDeveloper: Anastase NteziryayoEmail: anastasentezi@gmail.comLinkedIn: Anastase Nteziryayo
+# 🌾 Bridge2Rwanda Farms Fellowship Management System (B2R-FMS)
+
+## 📌 Project Overview
+The **B2R Farms Fellowship Management System (B2R-FMS)** is a professional-grade Django platform designed to digitize and optimize the Bridge2Rwanda Farms Fellowship Program. 
+
+By managing **109+ university-graduate Fellows** across Rwanda, the system provides a verified data pipeline for tracking agricultural training impact. It bridges the gap between field activities and administrative oversight through real-time analytics and a structured **Mentor-led review workflow**.
+
+---
+
+## 🎯 Key Features
+
+| Feature Area | Key Functionality | Target User |
+| :--- | :--- | :--- |
+| **RBAC Security** | Role-Based Access Control via JWT & Session Auth; Automated profile creation via **Django Signals**. | All Users |
+| **Activity Lifecycle** | Fellows log training sessions; Mentors review, approve, or request revisions. | Fellows & Mentors |
+| **Data Integrity** | Custom Python validators prevent future-dated logs and illogical numeric entries. | System |
+| **Analytics Engine** | Real-time performance leaderboards and geographic impact data via REST API. | Admins, Viewers |
+| **Reporting** | One-click **CSV Export** for verified impact data and donor reporting. | Coordinators |
+
+
+
+---
+
+## 🏗️ The Mentor-Review Workflow (Data Quality Assurance)
+To ensure the integrity of reported impact (such as the **398+ farmers reached**), the system implements a strict approval lifecycle:
+
+1. **Submission**: A Fellow logs a session (Topic, Village, Duration, Farmers, Photos).
+2. **Review**: The activity appears on the **Mentor Dashboard** with a "Pending" status.
+3. **Audit**: The Mentor can **Approve** the record or flag it for **Revision** with specific feedback.
+4. **Resubmission**: If flagged, the Fellow sees a "Needs Revision" alert, updates the record, and resubmits for final approval.
+
+
+
+---
+
+## 🗺️ API Documentation (RESTful Endpoints)
+All API requests (except Login/Register) require a JWT token in the header:  
+`Authorization: Bearer <your_token>`
+
+### 🔐 Authentication
+* **POST** `/api/auth/register/` - Create a new user account.
+* **POST** `/api/auth/login/` - Obtain JWT access & refresh tokens.
+* **POST** `/api/auth/logout/` - Blacklist refresh token to end session.
+* **POST** `/api/auth/token/refresh/` - Refresh expired access tokens.
+
+### 👨‍🌾 Fellow Management
+* **GET** `/api/fellows/` - List all Fellows.
+* **POST** `/api/fellows/` - Create a new Fellow record.
+* **GET** `/api/fellows/{id}/` - Get specific Fellow details.
+* **PUT** `/api/fellows/{id}/` - Update Fellow information.
+* **DELETE** `/api/fellows/{id}/` - Deactivate/Delete Fellow.
+* **GET** `/api/fellows/{id}/activities/` - Get specific Fellow's log history.
+* **GET** `/api/fellows/statistics/` - High-level metrics for Fellow performance.
+
+### 📝 Training Activities & Analytics
+* **GET** `/api/activities/` - List all training activities.
+* **POST** `/api/activities/logs/` - Log a new training session.
+* **GET** `/api/activities/logs/{id}/` - Get details of a specific log.
+* **PUT** `/api/activities/logs/{id}/` - Update an activity log.
+* **DELETE** `/api/activities/logs/{id}/` - Remove an activity log.
+* **GET** `/api/activities/reports/dashboard/` - Summary metrics for dashboard cards.
+* **GET** `/api/activities/reports/fellow-performance/` - Leaderboard data (Sum, Count, Avg).
+* **GET** `/api/reports/export/csv/` - Export all verified logs to CSV.
+
+---
+
+## 🛠️ Technical Stack
+* **Backend**: Django 4.2+ & Django REST Framework (DRF)
+* **Auth**: SimpleJWT (Stateless Token Auth)
+* **Frontend**: Bootstrap 5, Django Crispy Forms, Chart.js
+* **Database**: SQLite (Development) / PostgreSQL (Production ready)
+
+---
+
+## 🧪 Testing and Verification
+
+### 1. Web UI Workflow (Manual Testing)
+* **Fellow Submission**: Log in as a Fellow. Navigate to **Submit Activity**. Test validation by entering a future date; the system must prevent the save.
+* **Mentor Approval**: Log in as a Mentor. Go to the **Mentor Dashboard**, select a "Pending" activity, and **Approve** it. Ensure the global farmer count updates.
+* **Revision Loop**: As a Mentor, flag a report as **Needs Revision**. Log in as the Fellow and ensure the feedback is visible in the edit form.
+
+
+
+### 2. API Testing (Postman / Insomnia)
+1. **Login**: `POST` to `/api/auth/login/` to get your `access` token.
+2. **Authorized Request**: `GET` to `/api/activities/` with the header `Authorization: Bearer <token>`.
+3. **Constraint Test**: `POST` to `/api/activities/logs/` with `number_of_farmers_trained: -1`. The API should return a `400 Bad Request`.
+
+
+
+---
+
+📧 Contact
+Developer: Anastase Nteziryayo
+
+Email: anastasentezi@gmail.com
+
+LinkedIn:https://www.linkedin.com/in/anastase-nteziryayo-24147011b/
