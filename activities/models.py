@@ -1,9 +1,11 @@
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.conf import settings  # ADDED: To reference the User model
 from fellows.models import Fellow   
 from locations.models import Sector 
+from datetime import timedelta
 
 def validate_not_future(value):
     """
@@ -42,6 +44,14 @@ class TrainingActivity(models.Model):
         related_name='training_activities'
     )
     village_name = models.CharField(max_length=100)
+
+    # ADDED: For mentor to confirm/clean the village name during review
+    verified_village = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True,
+        help_text="Standardized village name confirmed by Mentor upon approval."
+    )
     
     # Ensures positive integer; prevents negative farmer counts in analytics
     number_of_farmers_trained = models.PositiveIntegerField(
@@ -64,13 +74,10 @@ class TrainingActivity(models.Model):
         choices=METHOD_CHOICES
     )
 
-    # Duration limits to prevent typos (e.g., 88 hours)
-    duration_hours = models.FloatField(
-        help_text="Duration of the training session in hours (e.g., 2.5)",
-        validators=[
-            MinValueValidator(0.1, message="Duration must be greater than 0."),
-            MaxValueValidator(12.0, message="Duration cannot exceed 12 hours.")
-        ]
+    # DurationField handles precise time (HH:MM:SS) 
+    duration = models.DurationField(
+        help_text="Format: HH:MM:SS (e.g., 02:30:00 for 2 hours and 30 mins)",
+        default=timedelta(hours=1)
     )
 
     # Optional Notes and Media
@@ -86,6 +93,15 @@ class TrainingActivity(models.Model):
         help_text="The current approval status of this report."
     )
     
+    # ADDED: Track which specific mentor approved this record
+    approved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='approved_activities'
+    )
+
     # Flag to track if the fellow updated an activity after a revision request
     is_resubmitted = models.BooleanField(default=False)
 
@@ -105,5 +121,5 @@ class TrainingActivity(models.Model):
         verbose_name_plural = "Training Activities"
 
     def __str__(self):
-        # Utilizes the get_full_name property from the Fellow model
+        # Utilizes the get_full_name property from the User model via Fellow
         return f"Activity by {self.fellow.user.get_full_name()} on {self.date}"

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Activity Details - {{ activity.training_topic }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'all_activities' %}" class="text-decoration-none">Activity History</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Report Details</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <div class="card-header bg-white border-bottom py-4 px-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="h2 fw-bold mb-1">{{ activity.training_topic }}</h1>
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-calendar3 me-2"></i>{{ activity.date|date:"F d, Y" }} 
+                                <span class="mx-2">|</span> 
+                                <i class="bi bi-geo-alt me-1"></i>{{ activity.village_name }}, {{ activity.sector.name }}
+                            </p>
+                        </div>
+                        <div>
+                            {% if activity.status == 'APPROVED' %}
+                                <span class="badge bg-success px-3 py-2 fs-6">Approved</span>
+                            {% elif activity.status == 'REVISION' %}
+                                <span class="badge bg-warning text-dark px-3 py-2 fs-6">Revision Needed</span>
+                            {% else %}
+                                <span class="badge bg-primary px-3 py-2 fs-6">Pending Review</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-0 bg-light border-bottom">
+                    <div class="col-md-4 border-end p-4 text-center">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1">Farmers Trained</small>
+                        <span class="h2 fw-black text-success">{{ activity.number_of_farmers_trained }}</span>
+                    </div>
+                    <div class="col-md-4 border-end p-4 text-center">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1">Methodology</small>
+                        <span class="h5 fw-bold">{{ activity.get_training_method_display }}</span>
+                    </div>
+                    <div class="col-md-4 p-4 text-center">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1">Duration</small>
+                        <span class="h5 fw-bold">{{ activity.duration }}</span>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h5 class="fw-bold border-bottom pb-2 mb-3">Location Context</h5>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td class="text-muted w-25">District:</td>
+                                    <td class="fw-bold">{{ activity.sector.district.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Sector:</td>
+                                    <td class="fw-bold">{{ activity.sector.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Village:</td>
+                                    <td class="fw-bold">{{ activity.village_name }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="fw-bold border-bottom pb-2 mb-3">Challenges & Notes</h5>
+                            <div class="p-3 bg-light rounded border italic">
+                                {{ activity.challenges_notes|default:"No notes or challenges reported for this session." }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if activity.mentor_comments or activity.status == 'REVISION' %}
+                    <div class="mt-5 alert alert-warning border-0 shadow-sm p-4">
+                        <h5 class="alert-heading fw-bold"><i class="bi bi-chat-left-text me-2"></i>Mentor Feedback</h5>
+                        <p class="mb-0">
+                            {{ activity.mentor_comments|default:"Your mentor has requested a revision. Please review your report and update the necessary details." }}
+                        </p>
+                        {% if activity.status == 'REVISION' %}
+                        <hr>
+                        <a href="{% url 'edit_report' activity.pk %}" class="btn btn-warning fw-bold mt-2">
+                            <i class="bi bi-pencil-square me-2"></i>Update & Resubmit Report
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-footer bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+                    <a href="{% url 'all_activities' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to History
+                    </a>
+                    <small class="text-muted">Report ID: #TRAIN-{{ activity.id }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

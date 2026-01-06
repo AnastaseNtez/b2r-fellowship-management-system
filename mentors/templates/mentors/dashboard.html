@@ -3,51 +3,76 @@
 {% block title %}Mentor Review Portal | B2R FARMS{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-md-8">
-        <h1 class="display-5 fw-bold">Mentor Review Portal</h1>
+<div class="row mb-4 align-items-center">
+    <div class="col-md-7">
+        <h1 class="display-5 fw-bold text-dark">Mentor Review Portal</h1>
         <p class="lead text-muted">Review and approve training activities submitted by your assigned fellows.</p>
+    </div>
+    <div class="col-md-5 text-md-end d-print-none">
+        <a href="{% url 'impact_summary' %}" class="btn btn-primary btn-lg shadow-sm">
+            <i class="bi bi-graph-up-arrow me-2"></i>View Program Impact
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-5 text-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm py-4 bg-white">
+            <h6 class="text-muted text-uppercase small mb-1">Total Pending Approval</h6>
+            <h2 class="fw-bold mb-0 text-primary">{{ pending_reports|length }}</h2>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm py-4 bg-white">
+            <h6 class="text-muted text-uppercase small mb-1">Needs Resubmission</h6>
+            <h2 class="fw-bold text-info mb-0">{{ resubmission_count|default:"0" }}</h2>
+        </div>
     </div>
 </div>
 
 <div class="card shadow-sm border-0 mb-5">
-    <div class="card-header bg-dark text-white py-3">
-        <h5 class="mb-0 fw-bold"><i class="bi bi-clipboard-check me-2"></i>Pending Approval</h5>
+    <div class="card-header bg-dark text-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-clipboard-check me-2"></i>Pending Approval Queue</h5>
+        <span class="badge bg-secondary px-3 py-2">
+            {{ pending_reports|length }} Report{{ pending_reports|length|pluralize }}
+        </span>
     </div>
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th style="width: 25%">Fellow</th>
-                    <th style="width: 25%">Location (District/Sector)</th>
-                    <th style="width: 20%">Topic</th>
-                    <th style="width: 15%">Date</th>
-                    <th style="width: 15%" class="text-center">Action</th>
+                    <th class="ps-4">Fellow</th>
+                    <th>Location (District/Sector)</th>
+                    <th>Topic</th>
+                    <th>Date</th>
+                    <th class="text-center pe-4">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for report in pending_reports %}
                 <tr>
-                    <td>
-                        <div class="fw-bold">{{ report.fellow.user.get_full_name }}</div>
+                    <td class="ps-4">
+                        <div class="fw-bold text-dark">{{ report.fellow.user.get_full_name }}</div>
                         <div class="text-muted small">{{ report.fellow.user.email }}</div>
                     </td>
                     <td>
-                        {{ report.fellow.assigned_sector.district.name }} / {{ report.fellow.assigned_sector.name }}
+                        <span class="text-dark">{{ report.fellow.assigned_sector.district.name }}</span>
+                        <span class="text-muted mx-1">/</span>
+                        <span class="text-muted small">{{ report.fellow.assigned_sector.name }}</span>
                     </td>
                     <td>
-                        {{ report.training_topic }}
+                        <span class="fw-semibold">{{ report.training_topic }}</span>
                         {% if report.is_resubmitted %}
                         <div class="mt-1">
-                            <span class="badge bg-info text-dark shadow-sm" style="font-size: 0.7rem;">
+                            <span class="badge bg-info text-dark" style="font-size: 0.7rem;">
                                 <i class="bi bi-arrow-clockwise"></i> RESUBMITTED
                             </span>
                         </div>
                         {% endif %}
                     </td>
                     <td>{{ report.date|date:"M d, Y" }}</td>
-                    <td class="text-center">
-                        <a href="{% url 'review_report' report.pk %}" class="btn btn-outline-primary btn-sm px-3">
+                    <td class="text-center pe-4">
+                        <a href="{% url 'review_report' report.pk %}" class="btn btn-outline-primary btn-sm px-4 shadow-sm">
                             Review Details
                         </a>
                     </td>
@@ -55,28 +80,16 @@
                 {% empty %}
                 <tr>
                     <td colspan="5" class="text-center py-5 text-muted">
-                        <i class="bi bi-check2-all display-4 d-block mb-3"></i>
-                        No reports are currently pending your approval.
+                        <div class="mb-3">
+                            <i class="bi bi-check2-all text-success" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="fw-bold">All caught up!</h5>
+                        <p class="mb-0">No reports are currently pending your approval.</p>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
-</div>
-
-<div class="row text-center mt-4">
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm py-3 bg-light">
-            <h6 class="text-muted text-uppercase small mb-1">Total Pending</h6>
-            <h2 class="fw-bold mb-0">{{ total_pending }}</h2>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm py-3 bg-light">
-            <h6 class="text-muted text-uppercase small mb-1">Resubmissions</h6>
-            <h2 class="fw-bold text-info mb-0">{{ resubmission_count }}</h2>
-        </div>
     </div>
 </div>
 {% endblock %}

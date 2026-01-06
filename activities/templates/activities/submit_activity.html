@@ -1,4 +1,12 @@
+
+
 {% extends 'base.html' %}
+
+{% if form.errors %}
+    <div class="alert alert-danger">
+        {{ form.errors }}
+    </div>
+{% endif %}
 {% load crispy_forms_tags %}
 
 {% block title %}{% if edit_mode %}Edit Training Report{% else %}Submit Activity{% endif %} | B2R FARMS{% endblock %}
@@ -22,6 +30,21 @@
                 </div>
             </div>
             {% endif %}
+            {% if form.errors %}
+    <div class="alert alert-danger shadow-sm">
+        <h6 class="fw-bold">Please correct the following:</h6>
+        <ul class="mb-0">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+ {% endif %}
 
             <div class="card shadow border-0">
                 <div class="card-header bg-success text-white py-3">
@@ -48,7 +71,8 @@
                                 {{ form.village_name|as_crispy_field }}
                             </div>
                             <div class="col-md-6">
-                                {{ form.duration_hours|as_crispy_field }}
+                                {# FIXED: Changed duration_hours to duration to match your new model and form #}
+                                {{ form.duration|as_crispy_field }}
                             </div>
                         </div>
                         

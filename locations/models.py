@@ -53,3 +53,20 @@ class Sector(models.Model):
 
     def __str__(self):
         return f"{self.name} Sector"
+    
+class Village(models.Model):
+    """Represents the fourth-level administrative division within a Sector."""
+    sector = models.ForeignKey(
+        Sector, 
+        on_delete=models.CASCADE, 
+        related_name='villages'
+    )
+    name = models.CharField(max_length=100)
+    
+    class Meta:
+        # Ensures village names are unique within a specific Sector
+        unique_together = ('name', 'sector')
+        ordering = ['sector__name', 'name']
+
+    def __str__(self):
+        return f"{self.name} Village ({self.sector.name})"

@@ -14,8 +14,8 @@ By managing **109+ university-graduate Fellows** across Rwanda, the system provi
 | **RBAC Security** | Role-Based Access Control via JWT & Session Auth; Automated profile creation via **Django Signals**. | All Users |
 | **Activity Lifecycle** | Fellows log training sessions; Mentors review, approve, or request revisions. | Fellows & Mentors |
 | **Data Integrity** | Custom Python validators prevent future-dated logs and illogical numeric entries. | System |
-| **Analytics Engine** | Real-time performance leaderboards and geographic impact data via REST API. | Admins, Viewers |
-| **Reporting** | One-click **CSV Export** for verified impact data and donor reporting. | Coordinators |
+| **Analytics Engine** | Real-time performance leaderboards and geographic impact data via REST API. | Admins,  Viewers, Mentors |
+| **Reporting** | One-click **CSV Export** for verified impact data and donor reporting. | Coordinators, Mentors, Admins|
 
 
 
@@ -87,7 +87,12 @@ All API requests (except Login/Register) require a JWT token in the header:
 3. **Constraint Test**: `POST` to `/api/activities/logs/` with `number_of_farmers_trained: -1`. The API should return a `400 Bad Request`.
 
 
+fellow users:  testfellow@example.com
+               test2@example.com
+password:  User123!
 
+mentor user: mentor1@example.com
+password: 2025.Mentor!
 ---
 
 📧 Contact

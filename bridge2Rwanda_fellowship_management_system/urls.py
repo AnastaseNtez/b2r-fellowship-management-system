@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
-from accounts.views import smart_redirect # Import the gatekeeper view
+from accounts.views import smart_redirect # Import the gatekeeper view (login page)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -22,20 +22,16 @@ urlpatterns = [
     # 2. Locations AJAX URLs
     path('locations/', include('locations.urls')), 
     
-    # 3. FELLOWS APP - WEB VIEWS & DASHBOARD
-    # This inclusion makes the 'dashboard' name available globally
+    # --- WEB INTERFACES (HTML) ---
     path('fellows/', include('fellows.urls')),
-    
-    # 4. Activities App URLs
-    # Includes 'mentor_dashboard' and 'submit_activity'
-    path('activities/', include('activities.urls')), 
-
-    # 5. Mentors App URLs
+    path('activities/', include('activities.urls')),
     path('mentors/', include('mentors.urls')),
 
-    # 6. API ENDPOINTS (Separate prefixes for clarity)
-    path('api/fellows/', include('fellows.urls')),
-    path('api/activities/', include('activities.urls')),
+    # --- API ENDPOINTS (JSON) ---
+    path('api/fellows/', include('fellows.api_urls')), # fellow list
+
+    path('api/activities/', include('activities.api_urls')), 
+    
     path('api/locations/', include('locations.urls')),
 
 ]

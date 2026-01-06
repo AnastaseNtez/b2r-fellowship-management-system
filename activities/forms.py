@@ -9,7 +9,6 @@ class ActivityReportForm(forms.ModelForm):
     """
     class Meta:
         model = TrainingActivity
-        # Added 'sector' to match your updated model
         fields = [
             'date',
             'sector', 
@@ -17,7 +16,7 @@ class ActivityReportForm(forms.ModelForm):
             'number_of_farmers_trained', 
             'training_topic', 
             'training_method', 
-            'duration_hours',
+            'duration',
             'challenges_notes', 
             'success_stories', 
             'photos'
@@ -48,8 +47,14 @@ class ActivityReportForm(forms.ModelForm):
             'number_of_farmers_trained': forms.NumberInput(
                 attrs={'class': 'form-control', 'min': '1'}
             ),
-            'duration_hours': forms.NumberInput(
-                attrs={'class': 'form-control', 'step': '0.5', 'min': '0.1', 'max': '12'}
+            # FIXED: Using TextInput to allow HH:MM:SS format 
+            # This prevents the browser "valid values" error for decimals.
+            'duration': forms.TextInput(
+                attrs={
+                    'class': 'form-control', 
+                    'placeholder': 'HH:MM:SS (e.g., 02:30:00)',
+                    'title': 'Enter duration as Hours:Minutes:Seconds'
+                }
             ),
             'photos': forms.ClearableFileInput(
                 attrs={'class': 'form-control'}
@@ -57,14 +62,14 @@ class ActivityReportForm(forms.ModelForm):
         }
 
     def clean_date(self):
-        """Redundant check to ensure the date is not in the future."""
+        """Ensures the training date is not set in the future."""
         date = self.cleaned_data.get('date')
         if date and date > timezone.now().date():
             raise forms.ValidationError("You cannot log an activity for a future date.")
         return date
 
     def clean_number_of_farmers_trained(self):
-        """Ensures at least one farmer is trained to maintain accurate sum metrics."""
+        """Ensures at least one farmer is recorded for impact metrics."""
         count = self.cleaned_data.get('number_of_farmers_trained')
         if count is not None and count < 1:
             raise forms.ValidationError("The number of farmers trained must be at least 1.")

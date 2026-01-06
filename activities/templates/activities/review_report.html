@@ -25,7 +25,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="text-muted small text-uppercase fw-bold">Date & Location</label>
-                            <p class="fs-5">{{ report.date|date:"F d, Y" }} — {{ report.village_name }}</p>
+                            <p class="fs-5">{{ report.date|date:"F d, Y" }} — {{ report.sector.name }} Sector</p>
                         </div>
                         <div class="col-md-4">
                             <label class="text-muted small text-uppercase fw-bold">Farmers Trained</label>
@@ -37,11 +37,11 @@
                         </div>
                         <div class="col-md-4">
                             <label class="text-muted small text-uppercase fw-bold">Duration</label>
-                            <p class="fs-5">{{ report.duration_hours }} Hours</p>
+                            <p class="fs-5">{{ report.duration }}</p>
                         </div>
                         <div class="col-12">
                             <hr>
-                            <label class="text-muted small text-uppercase fw-bold">Challenges & Notes</label>
+                            <label class="text-muted small text-uppercase fw-bold">Fellow's Original Notes & Challenges</label>
                             <p class="mt-2 text-dark">{{ report.challenges_notes|default:"No notes provided." }}</p>
                         </div>
                         {% if report.photos %}
@@ -56,10 +56,28 @@
 
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
-                    <h5 class="fw-bold mb-4">Your Evaluation</h5>
+                    <h5 class="fw-bold mb-4">Data Verification & Evaluation</h5>
                     <form method="POST">
                         {% csrf_token %}
                         
+                        <div class="row mb-4 p-3 bg-light rounded border">
+                            <div class="col-12 mb-3">
+                                <h6 class="text-primary fw-bold"><i class="bi bi-shield-check me-2"></i>Final Impact Verification</h6>
+                                <p class="small text-muted">Verify or correct these fields. This is what will appear in the final CSV report.</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="verified_village" class="form-label fw-bold small">Verified Village Name</label>
+                                <input type="text" name="verified_village" id="verified_village" class="form-control" 
+                                       value="{{ report.verified_village|default:report.village_name }}" 
+                                       placeholder="Correct village name typos here...">
+                            </div>
+                            <div class="col-12">
+                                <label for="success_stories" class="form-label fw-bold small">Success Story (For Export)</label>
+                                <textarea name="success_stories" id="success_stories" class="form-control" rows="3" 
+                                          placeholder="Summarize a success story for the comprehensive report...">{{ report.success_stories|default:'' }}</textarea>
+                            </div>
+                        </div>
+
                         <div class="mb-4">
                             <label for="mentor_comments" class="form-label fw-bold">Feedback / Revision Instructions</label>
                             <textarea 
@@ -75,10 +93,10 @@
                         </div>
 
                         <div class="d-flex gap-3">
-                            <button type="submit" name="action" value="approve" class="btn btn-success btn-lg px-5">
+                            <button type="submit" name="status" value="APPROVED" class="btn btn-success btn-lg px-5">
                                 <i class="bi bi-check-circle me-2"></i> Approve Report
                             </button>
-                            <button type="submit" name="action" value="reject" class="btn btn-warning btn-lg px-5">
+                            <button type="submit" name="status" value="REVISION" class="btn btn-warning btn-lg px-5">
                                 <i class="bi bi-exclamation-triangle me-2"></i> Request Revision
                             </button>
                         </div>

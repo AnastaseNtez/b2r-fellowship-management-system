@@ -1,180 +1,74 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-    
-<head>
-    <meta charset="UTF-8">
-    <title>Register New Fellow</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container { max-width: 800px; margin-top: 50px; }
-        .card-header { background-color: #007bff; color: white; }
-    </style>
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block content %}
+<div class="container mt-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'fellow_list' %}" class="text-decoration-none">Fellow Management</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+        </ol>
+    </nav>
 
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h4 class="mb-0">Fellow Registration (Coordinator Access)</h4>
-        </div>
-        <div class="card-body">
-            
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0"><i class="bi bi-person-gear me-2"></i>{{ title }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
 
-            <form method="post" novalidate>
-                {% csrf_token %}
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <fieldset>
-                            <legend class="mt-4">Personal Details</legend>
-                            
-                            <div class="mb-3">
-                                <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
-                                {{ form.email }}
-                                {% if form.email.errors %}<div class="text-danger">{{ form.email.errors }}</div>{% endif %}
-                            </div>
-                            <div class="mb-3">
-                                <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
+                        <h5 class="text-primary mb-3"><i class="bi bi-person-badge me-2"></i>Account Information</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">First Name</label>
                                 {{ form.first_name }}
-                                {% if form.first_name.errors %}<div class="text-danger">{{ form.first_name.errors }}</div>{% endif %}
+                                {% if form.first_name.errors %}<div class="text-danger small">{{ form.first_name.errors }}</div>{% endif %}
                             </div>
-                            <div class="mb-3">
-                                <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Last Name</label>
                                 {{ form.last_name }}
-                                {% if form.last_name.errors %}<div class="text-danger">{{ form.last_name.errors }}</div>{% endif %}
+                                {% if form.last_name.errors %}<div class="text-danger small">{{ form.last_name.errors }}</div>{% endif %}
                             </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Email Address (Login Username)</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}<div class="text-danger small">{{ form.email.errors }}</div>{% endif %}
+                            </div>
+                        </div>
 
-                            <legend class="mt-4">Educational Background</legend>
+                        <hr class="my-4">
 
-                            <div class="mb-3">
-                                <label for="{{ form.university.id_for_label }}" class="form-label">{{ form.university.label }}</label>
-                                {{ form.university }}
-                                {% if form.university.errors %}<div class="text-danger">{{ form.university.errors }}</div>{% endif %}
-                            </div>
-                            <div class="mb-3">
-                                <label for="{{ form.degree_field.id_for_label }}" class="form-label">{{ form.degree_field.label }}</label>
-                                {{ form.degree_field }}
-                                {% if form.degree_field.errors %}<div class="text-danger">{{ form.degree_field.errors }}</div>{% endif %}
-                            </div>
-                            <div class="mb-3">
-                                <label for="{{ form.graduation_year.id_for_label }}" class="form-label">{{ form.graduation_year.label }}</label>
-                                {{ form.graduation_year }}
-                                {% if form.graduation_year.errors %}<div class="text-danger">{{ form.graduation_year.errors }}</div>{% endif %}
-                            </div>
-                        </fieldset>
-                    </div>
-
-                    <div class="col-md-6">
-                        <fieldset>
-                            <legend class="mt-4">Assignment & Dates</legend>
-                            
-                            <div class="mb-3">
-                                <label for="{{ form.province.id_for_label }}" class="form-label">{{ form.province.label }}</label>
-                                {{ form.province }}
-                                {% if form.province.errors %}<div class="text-danger">{{ form.province.errors }}</div>{% endif %}
-                            </div>
-                            <div class="mb-3">
-                                <label for="{{ form.district.id_for_label }}" class="form-label">{{ form.district.label }}</label>
-                                {{ form.district }}
-                                {% if form.district.errors %}<div class="text-danger">{{ form.district.errors }}</div>{% endif %}
-                            </div>
-                            <div class="mb-3">
-                                <label for="{{ form.assigned_sector.id_for_label }}" class="form-label">{{ form.assigned_sector.label }}</label>
+                        <h5 class="text-primary mb-3"><i class="bi bi-geo-alt me-2"></i>Assignment & Status</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Assigned Sector</label>
                                 {{ form.assigned_sector }}
-                                {% if form.assigned_sector.errors %}<div class="text-danger">{{ form.assigned_sector.errors }}</div>{% endif %}
+                                {% if form.assigned_sector.errors %}<div class="text-danger small">{{ form.assigned_sector.errors }}</div>{% endif %}
                             </div>
-
-                            <div class="mb-3">
-                                <label for="{{ form.status.id_for_label }}" class="form-label">{{ form.status.label }}</label>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Program Status</label>
                                 {{ form.status }}
-                                {% if form.status.errors %}<div class="text-danger">{{ form.status.errors }}</div>{% endif %}
+                                {% if form.status.errors %}<div class="text-danger small">{{ form.status.errors }}</div>{% endif %}
                             </div>
+                        </div>
 
-                            <div class="mb-3 form-check">
-                                {{ form.training_completed }}
-                                <label for="{{ form.training_completed.id_for_label }}" class="form-check-label">{{ form.training_completed.label }}</label>
-                                {% if form.training_completed.errors %}<div class="text-danger">{{ form.training_completed.errors }}</div>{% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="{{ form.fellowship_start_date.id_for_label }}" class="form-label">{{ form.fellowship_start_date.label }}</label>
-                                {{ form.fellowship_start_date }}
-                                {% if form.fellowship_start_date.errors %}<div class="text-danger">{{ form.fellowship_start_date.errors }}</div>{% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="{{ form.fellowship_end_date.id_for_label }}" class="form-label">{{ form.fellowship_end_date.label }}</label>
-                                {{ form.fellowship_end_date }}
-                                {% if form.fellowship_end_date.errors %}<div class="text-danger">{{ form.fellowship_end_date.errors }}</div>{% endif %}
-                            </div>
-
-                        </fieldset>
-                    </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'fellow_list' %}" class="btn btn-light border px-4">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                                {% if 'Edit' in title %}Update Fellow{% else %}Create Fellow{% endif %}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-success btn-lg">Register Fellow</button>
-                </div>
-            </form>
+            </div>
+            {% if not 'Edit' in title %}
+            <div class="alert alert-info mt-3 border-0 shadow-sm">
+                <i class="bi bi-info-circle-fill me-2"></i> New fellows will be assigned the default password: <strong>B2RFarms2026!</strong>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script>
-    // --- DISTRICTS CASCADE ---
-    $("#id_province").change(function () {
-        const provinceId = $(this).val();
-        const districtSelect = $("#id_district");
-        const sectorSelect = $("#id_assigned_sector");
-        
-        // Reset dependent fields
-        districtSelect.empty().append('<option value="">--- Select District ---</option>');
-        sectorSelect.empty().append('<option value="">--- Select Sector ---</option>');
-
-        if (provinceId) {
-            $.ajax({
-                url: "{% url 'ajax_load_districts' %}",
-                data: { 'province_id': provinceId },
-                dataType: 'json',
-                success: function (data) {
-                    $.each(data, function (key, value) {
-                        districtSelect.append('<option value="' + key + '">' + value + '</option>');
-                    });
-                }
-            });
-        }
-    });
-
-    // --- SECTORS CASCADE ---
-    $("#id_district").change(function () {
-        const districtId = $(this).val();
-        const sectorSelect = $("#id_assigned_sector");
-        
-        // Reset Sector field
-        sectorSelect.empty().append('<option value="">--- Select Sector ---</option>');
-
-        if (districtId) {
-            $.ajax({
-                url: "{% url 'ajax_load_sectors' %}",
-                data: { 'district_id': districtId },
-                dataType: 'json',
-                success: function (data) {
-                    $.each(data, function (key, value) {
-                        sectorSelect.append('<option value="' + key + '">' + value + '</option>');
-                    });
-                }
-            });
-        }
-    });
-</script>
-
-</body>
-</html>
+{% endblock %}

@@ -6,12 +6,17 @@ class TrainingActivitySerializer(serializers.ModelSerializer):
     Serializer for the TrainingActivity model.
     - Provides human-readable names for Fellow and District.
     - Includes status labels for clear frontend display.
+    - Calculates decimal duration from DurationField.
     - Handles photo uploads and validation logic.
     """
+    
     # Readable strings for the frontend
     fellow_name = serializers.ReadOnlyField(source='fellow.user.get_full_name')
     district_name = serializers.ReadOnlyField(source='sector.district.name')
     status_label = serializers.CharField(source='get_status_display', read_only=True)
+    
+    # Calculated field: Converts DurationField (timedelta) to a decimal number
+    duration_hours = serializers.SerializerMethodField()
 
     class Meta:
         model = TrainingActivity
@@ -25,7 +30,8 @@ class TrainingActivitySerializer(serializers.ModelSerializer):
             'village_name',
             'training_topic', 
             'training_method', 
-            'duration_hours', 
+            'duration',          # HH:MM:SS format
+            'duration_hours',    # Decimal format (e.g., 1.5)
             'number_of_farmers_trained', 
             'status', 
             'status_label',
@@ -36,6 +42,16 @@ class TrainingActivitySerializer(serializers.ModelSerializer):
         ]
         # These fields are managed by Mentors or the system, not by the Fellow API
         read_only_fields = ['status', 'mentor_comments', 'created_at', 'is_resubmitted']
+
+    def get_duration_hours(self, obj):
+        """
+        Logic to convert the model's DurationField (timedelta) 
+        into a float for the API (e.g., 90 mins -> 1.5 hours).
+        """
+        if obj.duration:
+            # total_seconds() / 3600 converts to hours
+            return round(obj.duration.total_seconds() / 3600, 2)
+        return 0.0
 
     def validate_number_of_farmers_trained(self, value):
         """API-level check to ensure data integrity for impact metrics."""
