@@ -80,7 +80,7 @@ All API requests (except Login/Register) require a JWT token in the header:
 * **Revision Loop**: As a Mentor, flag a report as **Needs Revision**. Log in as the Fellow and ensure the feedback is visible in the edit form.
 
 
-### 2. Web view testing: For sefaty reasons, I will delete this part or change credentials before deploying this project online.
+### 2. Credentials for Web view testing: I will delete this part or change credentials before deploying this project online.
 1. **Fellow Users**: testfellow@example.com  or test2@example.com
   **Fellow Users password**: User123!
 2. **Mentor or coordinator Users**: mentor1@example.com
