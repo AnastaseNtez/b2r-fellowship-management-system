@@ -16,7 +16,7 @@ class IsCoordinatorOrReadOnly(permissions.BasePermission):
 class IsOwnerOrCoordinator(permissions.BasePermission):
     """
     Custom permission to only allow owners of a log to edit it.
-    Coordinators can edit any log.
+    Coordinators or Mentors can edit any log.
     """
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request
@@ -28,5 +28,4 @@ class IsOwnerOrCoordinator(permissions.BasePermission):
             return True
 
         # Fellows can only edit if they are the 'owner' of the record
-        # This assumes your model has a field named 'user' or 'fellow'
         return obj.fellow.user == request.user

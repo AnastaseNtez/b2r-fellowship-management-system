@@ -27,7 +27,7 @@ class TrainingActivity(models.Model):
         APPROVED = 'APPROVED', 'Approved'
         REVISION = 'REVISION', 'Needs Revision'
 
-    # FK1: Link to the Fellow who logged the activity
+    # FK1 (Foreign Key): Link to the Fellow who logged the activity
     fellow = models.ForeignKey(
         Fellow, 
         on_delete=models.CASCADE, 
@@ -93,7 +93,7 @@ class TrainingActivity(models.Model):
         help_text="The current approval status of this report."
     )
     
-    # ADDED: Track which specific mentor approved this record
+    # ADDED: Track which specific mentor approved this record: still working on this field. it's not working yet!
     approved_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,

@@ -13,5 +13,5 @@ urlpatterns = [
     path('fellow-performance/', views.FellowPerformanceAPIView.as_view(), name='api-performance'),
     
     # The ModelViewSet routes (e.g., /api/activities/logs/)
-    path('', include(router.urls)), # logs of training activity
+    path('', include(router.urls)), # training activity logs
 ]

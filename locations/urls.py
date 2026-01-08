@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # 1.REST API Paths (Required for Capstone)
+    # 1.REST API Paths 
     path('provinces/', views.ProvinceListView.as_view(), name='api-provinces'),
     path('districts/', views.DistrictListView.as_view(), name='api-districts'),
     path('sectors/', views.SectorListView.as_view(), name='api-sectors'),

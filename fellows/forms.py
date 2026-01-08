@@ -73,7 +73,7 @@ class FellowForm(forms.ModelForm):
         else:
             # CREATE: Create a new User and link to the new Fellow
             user = User.objects.create(**user_data)
-            # You might want to set a default password for new users
+            # might want to set a default password for new users
             user.set_password('B2RFarms2026!') 
             user.save()
             fellow = super().save(commit=False)

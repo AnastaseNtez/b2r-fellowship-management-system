@@ -15,9 +15,9 @@ from .models import TrainingActivity
 from .forms import ActivityReportForm
 from .serializers import TrainingActivitySerializer
 from .permissions import IsOwnerOrMentor
-from locations.models import Sector, Village # Import Village
+from locations.models import Sector, Village 
 from fellows.models import Fellow 
-from locations.models import District  # Import from your locations app
+from locations.models import District  
 
 # --- 1. HELPER: MENTOR/COORDINATOR CHECK ---
 
@@ -200,7 +200,7 @@ def export_activities_csv(request):
         'approved_by'
     )
 
-    # 2. CAPTURE ACTIVE FILTERS (Matches your Impact Summary View)
+    # 2. CAPTURE ACTIVE FILTERS (Matches Impact Summary View)
     search_query = request.GET.get('search')
     district_id = request.GET.get('district')
 
@@ -230,7 +230,7 @@ def export_activities_csv(request):
         village_display = activity.verified_village if activity.status == 'APPROVED' and activity.verified_village else activity.village_name
         
         # Pull Mentor Details correctly
-        # This fixes the "Pending" or "Not Yet Approved" issue in your screenshot
+        
         mentor_name = activity.approved_by.get_full_name() if activity.approved_by else "Pending"
         mentor_email = activity.approved_by.email if activity.approved_by else "N/A"
 
@@ -307,7 +307,7 @@ class TrainingActivityViewSet(viewsets.ModelViewSet):
         return TrainingActivity.objects.filter(fellow__user=user)
 
     def perform_create(self, serializer):
-        # Checks for either fellow or fellow_profile depending on your model setup
+        # Checks for either fellow or fellow_profile depending on the model setup
         if hasattr(self.request.user, 'fellow'):
             serializer.save(fellow=self.request.user.fellow)
         elif hasattr(self.request.user, 'fellow_profile'):

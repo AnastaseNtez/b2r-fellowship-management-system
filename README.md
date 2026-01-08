@@ -1,13 +1,13 @@
-# 🌾 Bridge2Rwanda Farms Fellowship Management System (B2R-FMS)
+# Bridge2Rwanda Farms Fellowship Management System (B2R-FMS)
 
-## 📌 Project Overview
+##  Project Overview
 The **B2R Farms Fellowship Management System (B2R-FMS)** is a professional-grade Django platform designed to digitize and optimize the Bridge2Rwanda Farms Fellowship Program. 
 
 By managing **109+ university-graduate Fellows** across Rwanda, the system provides a verified data pipeline for tracking agricultural training impact. It bridges the gap between field activities and administrative oversight through real-time analytics and a structured **Mentor-led review workflow**.
 
 ---
 
-## 🎯 Key Features
+## Key Features
 
 | Feature Area | Key Functionality | Target User |
 | :--- | :--- | :--- |
@@ -68,7 +68,7 @@ All API requests (except Login/Register) require a JWT token in the header:
 * **Backend**: Django 4.2+ & Django REST Framework (DRF)
 * **Auth**: SimpleJWT (Stateless Token Auth)
 * **Frontend**: Bootstrap 5, Django Crispy Forms, Chart.js
-* **Database**: SQLite (Development) / PostgreSQL (Production ready)
+* **Database**: SQLite (Development) / PostgreSQL (Production: not yet)
 
 ---
 
@@ -80,19 +80,12 @@ All API requests (except Login/Register) require a JWT token in the header:
 * **Revision Loop**: As a Mentor, flag a report as **Needs Revision**. Log in as the Fellow and ensure the feedback is visible in the edit form.
 
 
+### 2. Web view testing: For sefaty reasons, I will delete this part or change credentials before deploying this project online.
+1. **Fellow Users**: testfellow@example.com  or test2@example.com
+  **Fellow Users password**: User123!
+2. **Mentor or coordinator Users**: mentor1@example.com
+    **password**: 2025.Mentor!
 
-### 2. API Testing (Postman / Insomnia)
-1. **Login**: `POST` to `/api/auth/login/` to get your `access` token.
-2. **Authorized Request**: `GET` to `/api/activities/` with the header `Authorization: Bearer <token>`.
-3. **Constraint Test**: `POST` to `/api/activities/logs/` with `number_of_farmers_trained: -1`. The API should return a `400 Bad Request`.
-
-
-fellow users:  testfellow@example.com
-               test2@example.com
-password:  User123!
-
-mentor user: mentor1@example.com
-password: 2025.Mentor!
 ---
 
 📧 Contact

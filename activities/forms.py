@@ -47,7 +47,7 @@ class ActivityReportForm(forms.ModelForm):
             'number_of_farmers_trained': forms.NumberInput(
                 attrs={'class': 'form-control', 'min': '1'}
             ),
-            # FIXED: Using TextInput to allow HH:MM:SS format 
+            # Using TextInput to allow HH:MM:SS format 
             # This prevents the browser "valid values" error for decimals.
             'duration': forms.TextInput(
                 attrs={

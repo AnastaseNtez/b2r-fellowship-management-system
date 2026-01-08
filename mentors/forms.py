@@ -13,6 +13,6 @@ class MentorRegistrationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Add Bootstrap classes to all fields
+        # Addind Bootstrap classes to all fields
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})

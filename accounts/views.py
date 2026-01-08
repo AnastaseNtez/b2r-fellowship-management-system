@@ -14,12 +14,12 @@ from .serializers import RegisterSerializer
 def smart_redirect(request):
     role = request.user.userprofile.role
     if role == 'FELLOW':
-        return redirect('fellow_dashboard')  # Now points to the new summary page
+        return redirect('fellow_dashboard')  
     elif role in ['ADMIN', 'COORDINATOR', 'MENTOR']:
         return redirect('mentor_dashboard')
     return redirect('login')
-# --- NEW API VIEW ---
 
+# ---API VIEW ---
 class RegisterView(generics.CreateAPIView):
     """
     POST /api/auth/register/

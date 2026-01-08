@@ -8,7 +8,6 @@ from fellows.models import Fellow
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         # 1. Create the UserProfile
-        # We default to 'FELLOW' or 'VIEWER' depending on your registration logic
         profile = UserProfile.objects.create(user=instance, role='FELLOW')
         
         # 2. If they are a Fellow, create the Fellow record

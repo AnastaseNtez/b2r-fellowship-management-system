@@ -7,7 +7,7 @@ class ProvinceAdmin(admin.ModelAdmin):
     search_fields = ('name', 'code')
 
     def district_count(self, obj):
-        # Uses related_name='districts' from your District model
+        # Uses related_name='districts' from the District model
         return obj.districts.count()
     district_count.short_description = 'Number of Districts'
 
@@ -18,7 +18,7 @@ class DistrictAdmin(admin.ModelAdmin):
     search_fields = ('name', 'code')
 
     def sector_count(self, obj):
-        # FIX: Uses related_name='sectors' from your Sector model
+        #  Uses related_name='sectors' from the Sector model
         return obj.sectors.count()
     sector_count.short_description = 'Number of Sectors'
 

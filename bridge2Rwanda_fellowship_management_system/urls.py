@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
-from accounts.views import smart_redirect # Import the gatekeeper view (login page)
+from accounts.views import smart_redirect # Import the gatekeeper view (universal login page)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,7 +12,7 @@ urlpatterns = [
     # Redirects logged-in users to their respective dashboards
     path('', smart_redirect, name='smart_redirect'),
 
-    # --- Web Authentication (Login/Logout) ---
+    # --Web Authentication (Login/Logout) ---
     path('accounts/login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
@@ -31,7 +31,7 @@ urlpatterns = [
     path('api/fellows/', include('fellows.api_urls')), # fellow list
 
     path('api/activities/', include('activities.api_urls')), 
-    
+
     path('api/locations/', include('locations.urls')),
 
 ]

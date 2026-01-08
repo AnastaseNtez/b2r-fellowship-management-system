@@ -77,6 +77,6 @@ class SectorCoverageAPIView(APIView):
             "coverage_level": "High" if (impact_stats['total_farmers'] or 0) > 100 else "Active"
         })
     
-# Aliases to support existing AJAX calls in your forms
+# Aliases to support existing AJAX calls in the forms
 load_districts = DistrictListView.as_view()
 load_sectors = SectorListView.as_view()

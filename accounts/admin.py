@@ -5,7 +5,7 @@ from .models import UserProfile
 from fellows.models import Fellow
 """
 Consolidating User Management:
-This script allows you to see a person's role and fellowship details directly on their User page.
+This script helps to see a user's role and fellowship details directly on their User page.
 """
 # Define inlines to show Profile and Fellow details on the User page
 class UserProfileInline(admin.StackedInline):
@@ -18,7 +18,7 @@ class FellowInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'Fellowship Details'
 
-# We must unregister the default User admin before registering our customized version
+# unregister the default User admin before registering our customized version
 admin.site.unregister(User)
 
 @admin.register(User)

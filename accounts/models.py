@@ -14,11 +14,11 @@ class UserProfile(models.Model):
     """
     
     class Role(TextChoices):
-        ADMIN = 'ADMIN', 'Admin'              # Added for Superusers/Staff
+        ADMIN = 'ADMIN', 'Admin'     # Added for Superusers/Staff
         COORDINATOR = 'COORDINATOR', 'Coordinator'
         FELLOW = 'FELLOW', 'Fellow'
         MENTOR = 'MENTOR', 'Mentor'
-        VIEWER = 'VIEWER', 'Viewer'           # Added for Donors/Partners
+        VIEWER = 'VIEWER', 'Viewer'   # Added for Donors/Partners
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     
@@ -44,7 +44,7 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
         default_role = UserProfile.Role.ADMIN if instance.is_superuser else UserProfile.Role.FELLOW
         UserProfile.objects.create(user=instance, role=default_role)
     else:
-        # If an existing user is promoted to superuser, ensure their profile matches
+        # If an existing user is promoted to superuser, this ensures that his/her profile matches
         if instance.is_superuser:
             profile, _ = UserProfile.objects.get_or_create(user=instance)
             if profile.role != UserProfile.Role.ADMIN:

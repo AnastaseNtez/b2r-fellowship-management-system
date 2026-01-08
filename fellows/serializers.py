@@ -35,11 +35,11 @@ class FellowSerializer(serializers.ModelSerializer):
             'fellowship_end_date',
             'user'
         )
-        # Note: created_at and updated_at removed as they are not in your models.py
+        
         read_only_fields = ('user',)
 
     def create(self, validated_data):
-        # As your view handles user creation, this simply links the fellow
+        
         user_instance = validated_data.pop('user', None)
         if not user_instance:
              raise serializers.ValidationError("User instance must be provided.")

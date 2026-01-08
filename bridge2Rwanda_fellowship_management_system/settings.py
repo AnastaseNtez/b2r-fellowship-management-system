@@ -7,20 +7,19 @@ from pathlib import Path
 from datetime import timedelta
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths are like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: to keep the secret key used in production secret! In case I deploy this app online
 SECRET_KEY = 'django-insecure--#%!4c@u^xn6uqy$vi!h#yns!q(f9bv12#vl^p%&wplr9aj(c5'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: will change to "false" in production!
 DEBUG = True
 
-# During development, it is helpful to keep this empty or use 127.0.0.1
+# During development, it is helpful to keep this empty or to use 127.0.0.1
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-# --- NEW: CSRF TRUSTED ORIGINS ---
-# This prevents the "CSRF verification failed" error you encountered
+# This prevents the "CSRF verification failed" error 
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
 
 
@@ -132,7 +131,7 @@ SIMPLE_JWT = {
 }
 
 # --- Authentication Redirect Settings ---
-# Redirects to 'smart_redirect' which handles Mentor vs Fellow logic
+# Redirects to 'smart_redirect' which handles Mentor (coordinator) vs Fellow logic
 LOGIN_REDIRECT_URL = 'smart_redirect'
 LOGOUT_REDIRECT_URL = 'login' 
 LOGIN_URL = 'login' 

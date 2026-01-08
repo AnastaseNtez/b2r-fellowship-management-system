@@ -1,5 +1,5 @@
 from django.db.models import Sum, Count
-from django.db.models.functions import TruncMonth # <-- Add this
+from django.db.models.functions import TruncMonth 
 from .models import TrainingActivity
 
 def get_program_metrics():
