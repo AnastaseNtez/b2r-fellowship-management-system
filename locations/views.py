@@ -6,6 +6,8 @@ from django.db.models import Sum, Count
 
 from .models import Province, District, Sector
 from activities.models import TrainingActivity
+from rest_framework.reverse import reverse
+from rest_framework.decorators import api_view, permission_classes
 
 # --- 1. Province API ---
 class ProvinceListView(APIView):
@@ -76,7 +78,30 @@ class SectorCoverageAPIView(APIView):
             # Calculated coverage metric for B2R stakeholders
             "coverage_level": "High" if (impact_stats['total_farmers'] or 0) > 100 else "Active"
         })
-    
+
+# API/ endpoints listing
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def api_root_view(request, format=None):
+    """
+    B2R Fellowship Management System API Root.
+    This entry point provides a structured map of all available endpoints.
+    """
+    return Response({
+        # Geographical Hierarchy
+        'provinces': reverse('api-provinces', request=request, format=format),
+        'districts': reverse('api-districts', request=request, format=format),
+        'sectors': reverse('api-sectors', request=request, format=format),
+        
+        # Specific Analytics/Coverage
+        # Note: This is a detail endpoint, so we use a dummy ID (like 1) 
+        # just to show the structure to recruiters.
+        'sector-coverage-example': reverse('api-sector-coverage', kwargs={'id': 1}, request=request, format=format),
+    })
+
+
+
 # Aliases to support existing AJAX calls in the forms
 load_districts = DistrictListView.as_view()
 load_sectors = SectorListView.as_view()

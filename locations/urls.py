@@ -1,8 +1,11 @@
 from django.urls import path
 from . import views
+from .views import api_root_view
 
 urlpatterns = [
     # 1.REST API Paths 
+    # This matches the 'api/' URL and calls the root view
+    path('api/', api_root_view, name='api-root'),
     path('provinces/', views.ProvinceListView.as_view(), name='api-provinces'),
     path('districts/', views.DistrictListView.as_view(), name='api-districts'),
     path('sectors/', views.SectorListView.as_view(), name='api-sectors'),
