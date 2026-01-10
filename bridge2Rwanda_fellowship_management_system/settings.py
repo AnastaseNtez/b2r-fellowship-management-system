@@ -18,15 +18,19 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure--#%!4c@u^xn6uqy$vi!h#
 # False in production, pulls from Env Var
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-# Allow Render domain and local testing
+# 1. Allow Render domain and local testing
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
     ALLOWED_HOSTS.append(os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
 
-# CSRF security for the live URL
+# 2. CSRF security for the live URL
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
 if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
+    # Note: No trailing slash allowed here!
     CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ.get('RENDER_EXTERNAL_HOSTNAME')}")
+
+# 3. Essential for Render's HTTPS Proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -150,3 +154,4 @@ LOGIN_URL = 'login'
 # --- Crispy Forms ---
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
