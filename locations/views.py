@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db.models import Sum, Count
 
 from .models import Province, District, Sector
@@ -10,7 +10,7 @@ from activities.models import TrainingActivity
 # --- 1. Province API ---
 class ProvinceListView(APIView):
     """GET /api/locations/provinces/ - List all provinces."""
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         provinces = Province.objects.all().values('id', 'name', 'code')
